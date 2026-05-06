@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBRA FESTA</title>
+
+    <link rel="icon" type="image/png" href="img/favicon_vibra_green.png">
+    
+    <!-- Colaboración / autoría -->
+    <meta name="author" content="Kaimaind — desarrollo en colaboración con Vibra Festa">
+    <meta name="copyright" content="© 2025 Vibra Festa & Kaimaind">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TAN+Nimbus&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/styles.css?v=14">
+    </head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">
+                    <img src="img/logo_vibra_verde.png" alt="Vibra Festa">
+                    </a>
+                <ul class="nav-links">
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/#vendors">Ser expositor</a></li>
+                    <li><a href="/#about">Sobre nosotros</a></li>
+                    <li><a href="/galeria">Galería</a></li>
+                    <li><a href="/#contact">Contacto</a></li>
+                </ul>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </nav>
+                <div class="mobile-menu" id="mobileMenu">
+                <a href="/">Inicio</a>
+                <a href="/#about">Sobre nosotros</a>
+                <a href="/#events">Eventos</a>
+                <a href="/galeria">Galería</a>
+                <a href="/#vendors">Ser expositor</a>
+                <a href="/#contact">Contacto</a>
+             
+                <a class="mobile-ig" href="https://www.instagram.com/vibrafesta" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="fab fa-instagram" aria-hidden="true"></i>
+                </a>
+                </div>
+        </div>
+    </header>
+    
+    <!-- Fondo para cerrar el menú tocando afuera -->
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <section class="hero" id="home">
+        <div class="hero-slide active">
+            <picture>
+                <!-- 📱 Móvil: Corregido.PNG -->
+                <source
+                    srcset="img/Corregido.PNG"
+                    media="(max-width: 768px)"
+                >
+                <!-- 💻 Desktop: Horizontal.png -->
+                <source
+                    srcset="img/Horizontal.png"
+                    media="(min-width: 769px)"
+                >
+                <!-- Fallback -->
+                <img
+                    src="img/Horizontal.png"
+                    alt="Vibra Festa - Próximos Eventos"
+                    class="hero-image"
+                />
+            </picture>
+        </div>
+    </section>
+
+
+
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">Sobre <span>VIBRA FESTA</span></h2>
+            <div class="about-content">
+                <p class="about-text">
+                    Vibra es un evento que se realiza en la ciudad de Mérida, donde se unen 
+                    charlas con especialistas, actividades al aire libre, gastronomía, café y 
+                    marcas locales en un mismo espacio pensado para disfrutar.
+                </p>
+                <p class="about-text">
+                    Cada edición se desarrolla en distintos lugares de la ciudad, 
+                    conectando con la naturaleza y ofreciendo una experiencia única en cada 
+                    encuentro. Queremos que cada persona viva un momento especial, rodeado de 
+                    buena energía y comunidad.
+                </p>
+                <p class="about-text">
+                    ¡Somos un evento pet friendly y family friendly: todos son bienvenidos!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="vendors" id="vendors">
+        <div class="container">
+            <div class="vendors-content">
+                <h2 class="section-title">Sé <span>expositor</span></h2>
+                <p class="vendors-text">
+                    Únete a nuestra comunidad y muestra tu marca con un público increíble.
+                </p>
+                <button class="btn" id="openModalBtn">Postularme</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-cta">
+        <div class="container">
+            <div class="gallery-cta-content">
+                <h2 class="gallery-cta-title">¿Quieres ver cómo fue?</h2>
+                <p class="gallery-cta-text">
+                    Mira nuestras ediciones anteriores y vive la experiencia Vibra
+                </p>
+                <a href="/gallery.html" class="btn btn-gallery">Ver galería de eventos</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2 class="section-title">Testimonios de <span>expositores</span></h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Vibra festa ya se ha vuelto una parte esencial para nuestra marca, es una oportunidad excelente de conectar con gente nueva, marcas con mucho valor y vivir una experiencia única en nuestra ciudad"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-name">Estefany Arias</div>
+                        <div class="author-business">Bon o Bon</div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "El ambiente en la feria fue increíblemente vibrante y positivo. Se notaba la energía de todos los asistentes y expositores. Ha sido una increíble experiencia para nuestra marca."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-name">Danielis Garcia</div>
+                        <div class="author-business">Dagar</div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Estamos agradecidos por ser parte de esta última edición de Vibra, ya hoy llegó una persona a la óptica que nos vió en el evento ayer y se hará sus lentes Scottish."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-name">Scottish Eyewear</div>
+                        <div class="author-business">Optica Sanchez</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!------------------------------------------------------------------------------------------------------->
+
+    <!-- SECCIÓN DE COMENTARIOS DESACTIVADA
+    <section class="contact-messages" id="contact-messages">
+        <div class="container">
+            <div class="contact-form">
+                <h2 class="section-title">Deja <span>tu mensaje</span></h2>
+                <form id="messageForm">
+                    <textarea id="message-input" name="message-input" rows="5" cols="30" placeholder="Escribe tu mensaje aquí..." class="form-input" required></textarea>
+                    <input id="nombre-input" type="text" placeholder="Ingresá tu nombre" class="form-input" required>
+                    <button type="submit" class="btn">Enviar mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    -->
+
+    <!------------------------------------------------------------------------------------------------------->
+
+    <section class="Mensajes" id="Mensajes">
+        <div class="container">
+            <h2 class="section-title">Felicitaciones</h2>
+            
+            <div class="Mensajes-grid">
+                </div>
+            <!-- indicadores -->
+            <div class="Mensajes-dots">
+            <span class="msg-dot active"></span>
+            <span class="msg-dot"></span>
+            <span class="msg-dot"></span>
+            </div>
+        </div>
+    </section>
+
+ <section class="sponsors">
+        <div class="container">
+            <h3 class="sponsors-title">Nuestros patrocinadores</h3>
+            <div class="sponsors-grid">
+            <div class="sponsor-box">
+                <img class="sponsor-logo"
+                    src="img\patrocinantes\aldea.png"
+                    alt="Marca A">
+            </div>
+
+            <div class="sponsor-box">
+                <img class="sponsor-logo" src="img\patrocinantes\solera.png" 
+                alt="Marca B">
+            </div>
+
+            <div class="sponsor-box">
+                <img class="sponsor-logo" src="img\patrocinantes\mubles_deco_plazamayor.png" 
+                alt="Marca C">
+            </div>
+
+            <div class="sponsor-box">
+                <img class="sponsor-logo" src="img\patrocinantes\pepsi.png" 
+                alt="Marca D">
+            </div>
+            <div class="sponsor-box" style="--logo-h: 180px; --logo-h-mobile: 100px;">
+                <img class="sponsor-logo" src="img\patrocinantes\HALO.png" 
+                alt="Marca E">
+            </div>
+            <div class="sponsor-box" style="--logo-h: 150px; --logo-h-mobile: 80px;">
+                <img class="sponsor-logo" src="img\patrocinantes\minalba.png" 
+                alt="Marca F">
+            </div>
+            <div class="sponsor-box">
+                <img class="sponsor-logo" src="img\patrocinantes\polar.png" 
+                alt="Marca G">
+            </div>
+            <div class="sponsor-box">
+                <img class="sponsor-logo" src="img\patrocinantes\gatorade.png" 
+                alt="Marca H">
+            </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-form">
+                <h2 class="section-title">Seguimos <span>en contacto</span></h2>
+                <form>
+                    <input type="email" placeholder="Ingresa tu email" class="form-input" required>
+                    <button type="submit" class="btn">Quiero recibir info de próximos eventos</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">VIBRA <span>FESTA</span></div>
+                    <p class="footer-desc">
+                        Conectamos expositores con la comunidad a través de experiencias de marketplace excepcionales.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Enlaces rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/#vendors">Ser expositor</a></li>
+                        <li><a href="/#events">Eventos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Soporte</h4>
+                    <ul class="footer-links">
+                        <li><a href="/#about">Sobre nosotros</a></li>
+                        <li><a href="/#contact">Contacto</a></li>
+                        <li><a href="/galeria">Galería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Siguenos</h4>
+                    <a href="https://www.instagram.com/vibrafesta?igsh=ZmxuOWEwZmVndXNw" target="_blank" class="social-link" rel="noopener">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                        <span>Instagram</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 Vibra Festa. Todos los derechos reservados.</p>
+                <p class="credit">
+                Este sitio web fue desarrollado por 
+                <a href="https://www.instagram.com/kaimind.data" target="_blank" rel="noopener">Kaimaind</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="applicationModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn" aria-label="Cerrar formulario">&times;</button>
+            <h2 class="section-title">Formulario de <span>Postulación</span></h2>
+            <p class="modal-subtitle">Completa tus datos y cuentanos sobre tu proyecto. ¡Nos pondremos en contacto a la brevedad!</p>
+            
+            <form id="applicationForm" class="modal-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre y Apellido</label>
+                    <input type="text" id="nombre" name="nombre" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" id="correo" name="correo" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">Teléfono</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="instagram">Usuario de Instagram</label>
+                    <input type="text" id="instagram" name="instagram" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Contanos sobre tu emprendimiento</label>
+                    <textarea id="mensaje" name="mensaje" class="form-input" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="submitPostulacion">Enviar Postulación</button>
+            </form>
+            <div id="form-success-message" style="display: none; text-align: center; color: var(--accent-2); margin-top: 20px;">
+                <p>¡Gracias! Tu postulación ha sido enviada con éxito. Te contactaremos pronto.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/script.js?v=15"></script>
+</body>
+</html>

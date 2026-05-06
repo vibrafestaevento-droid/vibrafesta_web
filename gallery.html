@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIBRA FESTA · Eventos</title>
+
+  <link rel="icon" type="image/png" href="img/favicon_vibra_green.png">
+  <meta name="author" content="Kaimaind — desarrollo en colaboración con Vibra Festa">
+  <meta name="copyright" content="© 2025 Vibra Festa & Kaimaind">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/styles.css?v=14">
+</head>
+<body>
+  
+<header>
+  <div class="container">
+    <nav>
+      <a href="/" class="logo">
+        <img src="img/logo_vibra_verde.png" alt="Vibra Festa">
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/#vendors">Ser expositor</a></li>
+        <li><a href="/#about">Sobre nosotros</a></li>
+        <li><a href="/gallery.html">Galería</a></li>
+        <li><a href="/#contact">Contacto</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/">Inicio</a>
+      <a href="/#about">Sobre nosotros</a>
+      <a href="/#events">Eventos</a>
+      <a href="/gallery.html">Galería</a>
+      <a href="/#vendors">Ser expositor</a>
+      <a href="/#contact">Contacto</a>
+      <a class="mobile-ig" href="https://www.instagram.com/vibrafesta" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="fab fa-instagram" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<section class="gallery-hero">
+  <div>
+    <h1>Eventos</h1>
+    <p>Explorá algunos de nuestros eventos recientes. Cada tarjeta te lleva al detalle con fotos y highlights.</p>
+  </div>
+</section>
+
+<main>
+  <div class="breadcrumbs">
+    <a href="/">Inicio</a> <span>›</span> Eventos
+  </div>
+
+  <section class="events" id="eventsSection">
+    <div class="grid" id="eventsGrid" aria-live="polite"></div>
+  </section>
+
+  <script>
+    // Versión fija para cache
+    const CACHE_BUST = 'v=2025-11-15';
+
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const qRaw   = params.get('event');
+      const q      = qRaw ? decodeURIComponent(qRaw) : null;
+
+      const hero    = document.querySelector('.gallery-hero');
+      const crumb   = document.querySelector('.breadcrumbs');
+      const grid    = document.getElementById('eventsGrid');
+      const section = document.getElementById('eventsSection');
+
+      const res = await fetch('assets/gallery/eventos.json?' + CACHE_BUST, {
+        cache: 'no-store'
+      });
+      const eventos = await res.json();
+
+      function setHero(title, subtitle, cover){
+        document.querySelector('.gallery-hero h1').textContent = title;
+        document.querySelector('.gallery-hero p').textContent  = subtitle || '';
+        if (cover){
+          const webpCover = cover.replace(/\.[^/.]+$/, ".webp");
+          hero.style.backgroundImage =
+            `linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.60)), url('${webpCover}')`;
+          hero.style.backgroundSize = 'cover';
+          hero.style.backgroundPosition = 'center';
+        }
+      }
+
+      // Normaliza el folder para que siempre sea solo el nombre (ej: "OCTUBRE 2025")
+      function normalizeFolder(folder){
+        if (!folder) return '';
+        return folder.replace(/^assets\/gallery\//, '').trim();
+      }
+
+      function folderCandidates(ev){
+        const slug   = (ev.slug  || '').trim();
+        const title  = (ev.title || '').trim();
+        const folder = normalizeFolder(ev.folder);
+        const list = [
+          folder,
+          slug,
+          title,
+          title.toUpperCase(),
+          title.toLowerCase(),
+          title.replace(/\s+/g,'-').toLowerCase(),
+          (slug || title).replace(/-/g,' ')
+        ].filter(Boolean);
+        return [...new Set(list)];
+      }
+
+      async function tryFetchJson(urls){
+        for (const url of urls){
+          try{
+            const r = await fetch(url + '&' + CACHE_BUST, { cache:'no-store' });
+            if (r.ok) return { ok:true, url, json: await r.json() };
+          }catch(_){}
+        }
+        return { ok:false };
+      }
+
+      async function renderList(){
+        crumb.innerHTML = `<a href="/">Inicio</a> <span>›</span> Eventos`;
+        setHero('Eventos', 'Explorá algunos de nuestros eventos recientes. Cada tarjeta te lleva al detalle con fotos y highlights.');
+
+        eventos.sort((a,b)=> new Date(b.date) - new Date(a.date));
+
+        grid.innerHTML = eventos.map(ev => {
+          const webpCover = ev.cover.replace(/\.[^/.]+$/, ".webp");
+          const href = `/gallery.html?event=${encodeURIComponent(ev.slug || ev.title)}`;
+          return `
+            <article class="card" data-href="${href}">
+              <img src="${webpCover}" alt="${ev.title} — portada" loading="lazy" decoding="async">
+              <div class="body">
+                <h3>${ev.title}</h3>
+                <p>${ev.subtitle || `Fotos de la edición ${ev.title}.`}</p>
+              </div>
+              <div class="actions">
+                <a class="btn-link" href="${href}">
+                  Ver evento <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </a>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        grid.querySelectorAll('.card').forEach(card=>{
+          card.addEventListener('click', e=>{
+            if (!e.target.closest('a')) location.href = card.dataset.href;
+          });
+        });
+      }
+
+      async function renderEvent(query){
+        const qLow  = query.toLowerCase();
+        const qNorm = qLow.replace(/-/g,' ');
+
+        const ev = eventos.find(e=>{
+          const slug  = (e.slug  || '').toLowerCase();
+          const title = (e.title || '').toLowerCase();
+          return slug===qLow || slug===qNorm || title===qLow || title===qNorm;
+        });
+
+        if(!ev){
+          setHero('Evento no encontrado', `No encontramos "${query}".`);
+          crumb.innerHTML = `<a href="/">Inicio</a> <span>›</span> <a href="/gallery.html">Eventos</a> <span>›</span> ${query}`;
+          grid.innerHTML = '';
+          return;
+        }
+
+        crumb.innerHTML = `<a href="/">Inicio</a> <span>›</span> <a href="/gallery.html">Eventos</a> <span>›</span> ${ev.title}`;
+        setHero(ev.title, ev.subtitle || `Fotos de la edición ${ev.title}.`, ev.cover);
+
+        section.innerHTML = '<div class="photos" id="photos"><p style="grid-column:1/-1; color:var(--muted);">Cargando fotos...</p></div>';
+        const photosDiv = document.getElementById('photos');
+
+        const tries = folderCandidates(ev).map(f =>
+          `assets/gallery/${encodeURIComponent(f)}/fotos/photos.json?source=gallery`
+        );
+
+        const found = await tryFetchJson(tries);
+
+        if (!found.ok){
+          photosDiv.innerHTML = `<p>No hay fotos disponibles para esta edición.</p>`;
+          return;
+        }
+
+        const folderUsed = decodeURIComponent(found.url)
+          .split('assets/gallery/')[1]
+          .split('/fotos/')[0];
+
+        const base = `assets/gallery/${encodeURIComponent(folderUsed)}/fotos/`;
+        const imgs = (found.json.images || []);
+
+        photosDiv.innerHTML = imgs.map((name, index) => {
+          const webpName = name.replace(/\.[^/.]+$/, ".webp");
+          // Link a la galería con la foto específica
+          const photoUrl = `${window.location.origin}/gallery.html?event=${encodeURIComponent(ev.slug || ev.title)}&photo=${encodeURIComponent(webpName)}`;
+          return `
+            <figure class="photo" data-photo-name="${webpName}" data-photo-index="${index}" data-photo-url="${photoUrl}" data-photo-src="${base}${encodeURIComponent(webpName)}">
+              <img src="${base}${encodeURIComponent(webpName)}" alt="${ev.title} — ${name}" loading="lazy" decoding="async">
+            </figure>
+          `;
+        }).join('');
+
+        // Si hay un parámetro 'photo' en la URL, hacer scroll y resaltar esa foto
+        const photoParam = params.get('photo');
+        if (photoParam) {
+          const targetPhoto = document.querySelector(`.photo[data-photo-name="${photoParam}"]`);
+          if (targetPhoto) {
+            // Esperar un poco para que las imágenes carguen
+            setTimeout(() => {
+              targetPhoto.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              targetPhoto.classList.add('highlighted');
+
+              // Quitar el highlight después de 3 segundos
+              setTimeout(() => {
+                targetPhoto.classList.remove('highlighted');
+              }, 3000);
+            }, 500);
+          }
+        }
+      }
+
+      if (!q) await renderList();
+      else    await renderEvent(q);
+    })();
+  </script>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="copyright">
+      <p>&copy; 2025 Vibra Festa. Todos los derechos reservados.</p>
+      <p class="credit">
+        Este sitio web fue desarrollado por 
+        <a href="https://www.instagram.com/kaimind.data" target="_blank" rel="noopener">Kaimaind</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/script.js?v=14"></script>
+</body>
+</html>

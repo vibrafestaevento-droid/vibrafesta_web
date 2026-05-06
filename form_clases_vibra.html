@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserva de Clases · Vibra Festa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #ffe4f0 0, #fff 50%, #e0f7ff 100%);
+      margin: 0;
+      padding: 0;
+      color: #0f172a;
+    }
+    .wrap {
+      max-width: 640px;
+      margin: 24px auto 32px;
+      background: #ffffffee;
+      border-radius: 24px;
+      padding: 24px 20px 28px;
+      box-shadow: 0 22px 60px rgba(15, 23, 42, .15);
+      border: 1px solid rgba(148, 163, 184, .35);
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0 0 4px;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #76823A;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    /* === Caja de datos de pago (verde #76823A) === */
+    .pay-box {
+      margin: 14px 0 18px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f7f9ef;          /* fondo clarito */
+      border: 1px solid #d9e3bd;    /* borde suave */
+      font-size: 13px;
+    }
+    .pay-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #76823A;
+    }
+    .pay-bank {
+      font-size: 13px;
+      color: #76823A;
+      margin-bottom: 8px;
+    }
+    .copy-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #fff;
+      margin-top: 4px;
+      border: 1px dashed #cbd5e1;
+    }
+    .copy-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .copy-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #64748b;
+    }
+    .copy-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      color: #0f172a;
+    }
+    .copy-btn {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      background: #76823A;
+      color: #f9fafb;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(118, 130, 58, .35);
+    }
+    .copy-btn:hover {
+      background: #5f6a2f;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 14px;
+    }
+    label {
+      font-weight: 500;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="file"] {
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 1px rgba(14, 165, 233, .5);
+    }
+    .plan-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .plan-option {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .plan-option:hover {
+      border-color: #0ea5e9;
+      background: #f0f9ff;
+    }
+    .plan-option input {
+      margin-top: 4px;
+    }
+    .plan-body strong {
+      font-size: 14px;
+      display: block;
+    }
+    .plan-body span {
+      font-size: 13px;
+      color: #64748b;
+    }
+    .small {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .day-block {
+      margin-top: 4px;
+    }
+    .day-block h3 {
+      font-size: 14px;
+      margin: 8px 0 4px;
+      color: #0f172a;
+    }
+    .class-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+    }
+    .class-item {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    button[type="submit"] {
+      margin-top: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #76823A;
+      color: #f9fafb;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(14, 165, 233, .35);
+    }
+    button[type="submit"]:hover {
+      background: #d18b96;
+    }
+    .success {
+      display: none;
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #ecfdf5;
+      color: #15803d;
+      font-size: 13px;
+      border: 1px solid #bbf7d0;
+    }
+    .error {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #fef2f2;
+      color: #b91c1c;
+      font-size: 13px;
+      border: 1px solid #fecaca;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div style="text-align:center;">
+      <span class="badge">Vibra Festa · Charlas</span>
+      <h1>Inscríbete en las charlas</h1>
+      <p class="subtitle">
+        Selecciona las charlas gratuitas a las que quieres asistir.
+      </p>
+    </div>
+
+    <form id="clasesForm">
+      <!-- Datos personales -->
+      <div class="field">
+        <label for="nombre">Nombre y apellido</label>
+        <input type="text" id="nombre" name="nombre" required>
+      </div>
+
+      <div class="field">
+        <label for="telefono">Teléfono / WhatsApp</label>
+        <input type="tel" id="telefono" name="telefono" required>
+      </div>
+
+      <div class="field">
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" name="correo" required>
+      </div>
+
+      <div class="field">
+        <label for="instagram">Instagram</label>
+        <input type="text" id="instagram" name="instagram" placeholder="@tuusuario" required>
+      </div>
+
+      <!-- Charlas gratuitas -->
+      <div class="field">
+        <label>Charlas <span style="font-weight:400; color:#16a34a; font-size:13px;">— Gratuitas</span></label>
+        <p class="small" style="margin-bottom:6px;">Marca las que planeas asistir.</p>
+        <div class="class-list" style="margin-top:6px;">
+          <label class="class-item plan-option" style="padding:10px 12px; border-color:#bbf7d0; background:#f0fdf4;">
+            <input type="checkbox" name="charlas" value="12pm - 1pm · Charla al Ritmo del Balance">
+            <div class="plan-body">
+              <strong>12:30pm – 1:30pm · Charla al Ritmo del Balance</strong>
+              <span style="color:#16a34a;">Gratis</span>
+            </div>
+          </label>
+          <label class="class-item plan-option" style="padding:10px 12px; border-color:#bbf7d0; background:#f0fdf4;">
+            <input type="checkbox" name="charlas" value="2pm - 3pm · Charla Nutrición">
+            <div class="plan-body">
+              <strong>2pm – 3pm · Charla Nutrición</strong>
+              <span style="color:#16a34a;">Gratis</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit">¡Inscribirme!</button>
+
+      <div class="success" id="successMsg"></div>
+      <div class="error" id="errorMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEDLU8U70NoYJr_bbzQWPpgXS1DRhleRQS0akOala6D75WuKhvTaDN_49nAVvnCJ6bDw/exec';
+
+    const form = document.getElementById('clasesForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    let isSubmitting = false;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (isSubmitting) return;
+
+      const charlasSeleccionadas = Array.from(document.querySelectorAll('input[name="charlas"]:checked')).map(c => c.value);
+
+      if (charlasSeleccionadas.length === 0) {
+        return showError('Debes seleccionar al menos una charla.');
+      }
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+      errorMsg.style.display = 'none';
+
+      const payload = {
+        nombre: document.getElementById('nombre').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        correo: document.getElementById('correo').value.trim(),
+        instagram: document.getElementById('instagram').value.trim(),
+        charlasArray: charlasSeleccionadas
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        window.location.href = 'gracias_vibra.html';
+      }).catch(err => {
+        console.error(err);
+        showError('Hubo un problema al enviar. Intenta de nuevo o escríbenos por Instagram.');
+      });
+    });
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.style.display = 'block';
+      isSubmitting = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '¡Inscribirme!';
+    }
+
+  </script>
+</body>
+</html>
