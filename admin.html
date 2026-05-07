@@ -368,6 +368,13 @@
   // ── HELPERS API ──────────────────────────────────────────
   function token() { return localStorage.getItem('gh_token'); }
 
+  function decodeB64(b64) {
+    const binary = atob(b64.replace(/\n/g,''));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
   async function ghGet(path) {
     const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(path)}`,
       { headers: { Authorization: 'Bearer ' + token() } });
@@ -519,7 +526,7 @@
       // Actualizar eventos.json
       document.getElementById('progressTitle').textContent = 'Actualizando galería...';
       const eventosFile = await ghGet('assets/gallery/eventos.json');
-      const eventos = JSON.parse(atob(eventosFile.content.replace(/\n/g,'')));
+      const eventos = JSON.parse(decodeB64(eventosFile.content));
       eventos.unshift({
         title,
         slug: slug.toLowerCase().replace(/_/g, '-'),
@@ -561,7 +568,7 @@
     try {
       const file = await ghGet('form_clases_vibra.html');
       if (!file) { showError('charlasError', 'No se encontró el formulario.'); return; }
-      const html = atob(file.content.replace(/\n/g,''));
+      const html = decodeB64(file.content);
 
       // Charla 1
       const m1 = html.match(/name="charlas"\s+value="([^"]+)"[\s\S]*?<strong>([^<]+)<\/strong>/);
@@ -610,7 +617,7 @@
 
     try {
       const file = await ghGet('form_clases_vibra.html');
-      let html = atob(file.content.replace(/\n/g,''));
+      let html = decodeB64(file.content);
 
       const v1 = `${c1s} - ${c1e} · ${c1n}`;
       const v2 = `${c2s} - ${c2e} · ${c2n}`;
@@ -674,7 +681,7 @@
     try {
       const file = await ghGet('index.html');
       if (!file) { showError('textosError', 'No se encontró index.html.'); return; }
-      const html = atob(file.content.replace(/\n/g,''));
+      const html = decodeB64(file.content);
 
       // About paragraphs
       const aboutParas = [...html.matchAll(/<p class="about-text">([\s\S]*?)<\/p>/g)].map(m => m[1].trim());
@@ -786,7 +793,7 @@
     document.getElementById('textosOk').style.display = 'none';
     try {
       const file = await ghGet('index.html');
-      let html = atob(file.content.replace(/\n/g,''));
+      let html = decodeB64(file.content);
 
       // 1. Replace about-content block
       const newParas = getAboutParas();
