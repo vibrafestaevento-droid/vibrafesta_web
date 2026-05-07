@@ -65,6 +65,17 @@
     .text-section-body{padding:14px 16px}
     .toggle-icon{font-size:11px;color:#94a3b8}
     .btn-sm-danger{background:#fff;color:#ef4444;border:1.5px solid #ef4444;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;float:right;margin:0}
+    .photo-thumb{position:relative;aspect-ratio:1;overflow:hidden;border-radius:8px;cursor:pointer;background:#e2e8f0}
+    .photo-thumb img{width:100%;height:100%;object-fit:cover;transition:.2s}
+    .photo-thumb .del-overlay{display:none;position:absolute;inset:0;background:rgba(239,68,68,.75);align-items:center;justify-content:center;font-size:26px;color:#fff;border-radius:8px}
+    .photo-thumb.marked .del-overlay{display:flex}
+    .photo-thumb.marked img{opacity:.35}
+    .sponsor-item{display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:8px}
+    .sponsor-item img{width:64px;height:44px;object-fit:contain;background:#fff;border-radius:6px;border:1px solid #e2e8f0;padding:4px;flex-shrink:0}
+    .sponsor-item .sp-name{flex:1;font-size:14px;font-weight:600;color:#374151}
+    .del-bar{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .del-bar span{font-size:13px;color:#b91c1c;font-weight:600}
+    .del-bar button{background:#ef4444;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
   </style>
 </head>
 <body>
@@ -104,12 +115,22 @@
       <div class="menu-card" onclick="goTo('screen-evento')">
         <div class="icon">📸</div>
         <h3>Nuevo Evento</h3>
-        <p>Subir fotos de una nueva edición a la galería</p>
+        <p>Subir fotos de una nueva edición</p>
+      </div>
+      <div class="menu-card" onclick="goToGestionar()">
+        <div class="icon">📁</div>
+        <h3>Gestionar Evento</h3>
+        <p>Agregar o eliminar fotos de eventos</p>
       </div>
       <div class="menu-card" onclick="goTo('screen-charlas')">
         <div class="icon">🎙️</div>
         <h3>Editar Charlas</h3>
-        <p>Cambiar nombres y horarios de las charlas</p>
+        <p>Cambiar horarios y nombres</p>
+      </div>
+      <div class="menu-card" onclick="goToPatrocinantes()">
+        <div class="icon">🏪</div>
+        <h3>Patrocinantes</h3>
+        <p>Agregar o quitar logos de marcas</p>
       </div>
     </div>
     <div class="menu-card" style="margin-top:14px;display:flex;align-items:center;gap:14px;text-align:left" onclick="goToTextos()">
@@ -218,6 +239,85 @@
     <div id="charlasOk" class="alert alert-green" style="display:none">✅ Charlas actualizadas. En 2 minutos se verán en el sitio.</div>
     <button class="btn btn-primary" id="charlasBtn" onclick="saveCharlas()">💾 Guardar cambios</button>
     <button class="btn btn-outline" onclick="loadCharlas()">↺ Cargar valores actuales</button>
+  </div>
+</div>
+
+<!-- GESTIONAR EVENTO -->
+<div class="screen" id="screen-gestionar">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">📁 Gestionar Evento</div>
+
+    <div class="field">
+      <label>Selecciona el evento</label>
+      <select id="gSelect" onchange="selectGestionar()">
+        <option value="">— Cargando eventos... —</option>
+      </select>
+    </div>
+
+    <div id="gContent" style="display:none">
+
+      <!-- Fotos actuales -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:600;color:#374151">Fotos actuales</span>
+        <span style="font-size:11px;color:#94a3b8">Toca para marcar/desmarcar</span>
+      </div>
+      <div id="gGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+      <div id="gDelBar" class="del-bar" style="display:none">
+        <span id="gDelCount"></span>
+        <button onclick="deleteSelectedPhotos()">🗑 Eliminar</button>
+      </div>
+
+      <!-- Agregar fotos -->
+      <div style="margin-top:22px;font-size:14px;font-weight:600;color:#374151;margin-bottom:10px">Agregar más fotos</div>
+      <div class="drop-zone" id="gDropZone" onclick="document.getElementById('gFileInput').click()">
+        <div class="icon">🖼️</div>
+        <p>Toca o arrastra las fotos</p>
+        <p><strong>JPG, PNG, WebP</strong></p>
+      </div>
+      <input type="file" id="gFileInput" multiple accept="image/*" style="display:none" onchange="handleGFiles(this.files)">
+      <div id="gNewCount" style="display:none;font-size:13px;color:#76823A;font-weight:600;text-align:center;margin-top:6px"></div>
+      <button class="btn btn-primary" id="gAddBtn" style="display:none;margin-top:8px" onclick="addPhotosToEvento()">📤 Subir fotos nuevas</button>
+
+      <!-- Quitar de galería -->
+      <div style="margin-top:24px;padding-top:18px;border-top:1px solid #f1f5f9">
+        <button class="btn btn-danger" onclick="removeEventoFromGallery()">🗑 Quitar evento de la galería</button>
+        <div style="font-size:11px;color:#94a3b8;margin-top:5px;text-align:center">Solo desaparece del listado. Las fotos no se borran.</div>
+      </div>
+    </div>
+
+    <div id="gError" class="alert alert-red" style="display:none"></div>
+    <div id="gOk" class="alert alert-green" style="display:none"></div>
+  </div>
+</div>
+
+<!-- PATROCINANTES -->
+<div class="screen" id="screen-patrocinantes">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">🏪 Patrocinantes</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px">Los logos que aparecen en la sección de patrocinadores del sitio.</p>
+
+    <div id="spList"></div>
+
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#374151">Agregar patrocinante</div>
+      <div class="drop-zone" id="spDropZone" onclick="document.getElementById('spFileInput').click()" style="padding:18px">
+        <div class="icon" id="spDropIcon" style="font-size:28px">🖼️</div>
+        <p id="spDropText">Toca para elegir el logo</p>
+      </div>
+      <input type="file" id="spFileInput" accept="image/*" style="display:none" onchange="handleSponsorFile(this.files[0])">
+      <div class="field" style="margin-top:12px;margin-bottom:8px">
+        <label>Nombre del patrocinante</label>
+        <input type="text" id="spName" placeholder="Ej: Aldea Café">
+      </div>
+      <button class="btn btn-outline" onclick="addSponsorItem()">+ Agregar a la lista</button>
+    </div>
+
+    <div id="spError" class="alert alert-red" style="display:none"></div>
+    <div id="spOk" class="alert alert-green" style="display:none">✅ Patrocinantes actualizados. En 2 minutos se ven en el sitio.</div>
+    <button class="btn btn-primary" id="spBtn" onclick="savePatrocinantes()" style="margin-top:8px">💾 Guardar cambios</button>
+    <button class="btn btn-outline" onclick="loadPatrocinantes()">↺ Recargar actuales</button>
   </div>
 </div>
 
@@ -643,6 +743,347 @@
     } finally {
       document.getElementById('charlasBtn').disabled = false;
       document.getElementById('charlasBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  // ── GITHUB DELETE & LIST DIR ────────────────────────────
+  async function ghDelete(path, message, sha) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(path)}`, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, sha, branch: BRANCH })
+    });
+    return r;
+  }
+
+  async function ghListDir(path) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(path)}`,
+      { headers: { Authorization: 'Bearer ' + token() } });
+    if (!r.ok) return [];
+    return r.json();
+  }
+
+  // ── GESTIONAR EVENTO ─────────────────────────────────────
+  let gNewFiles = [];
+
+  async function goToGestionar() {
+    goTo('screen-gestionar');
+    document.getElementById('gContent').style.display = 'none';
+    document.getElementById('gError').style.display = 'none';
+    document.getElementById('gOk').style.display = 'none';
+    try {
+      const file = await ghGet('assets/gallery/eventos.json');
+      if (!file) return;
+      const eventos = JSON.parse(decodeB64(file.content));
+      const sel = document.getElementById('gSelect');
+      sel.innerHTML = '<option value="">— Elige un evento —</option>';
+      eventos.forEach(ev => {
+        const opt = document.createElement('option');
+        opt.value = ev.folder;
+        opt.textContent = ev.title + (ev.subtitle ? ' · ' + ev.subtitle : '');
+        sel.appendChild(opt);
+      });
+    } catch(e) {
+      document.getElementById('gError').textContent = 'Error cargando eventos: ' + e.message;
+      document.getElementById('gError').style.display = 'block';
+    }
+  }
+
+  async function selectGestionar() {
+    const folder = document.getElementById('gSelect').value;
+    const content = document.getElementById('gContent');
+    if (!folder) { content.style.display = 'none'; return; }
+    content.style.display = 'block';
+    document.getElementById('gGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;font-size:13px;padding:20px">Cargando fotos...</div>';
+    document.getElementById('gDelBar').style.display = 'none';
+    document.getElementById('gError').style.display = 'none';
+    document.getElementById('gOk').style.display = 'none';
+    gNewFiles = [];
+    document.getElementById('gAddBtn').style.display = 'none';
+    document.getElementById('gNewCount').style.display = 'none';
+
+    const files = await ghListDir(`assets/gallery/${folder}/fotos`);
+    const photos = Array.isArray(files) ? files.filter(f => /\.(webp|jpg|jpeg|png)$/i.test(f.name)) : [];
+    const grid = document.getElementById('gGrid');
+    grid.innerHTML = '';
+
+    if (photos.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;font-size:13px;padding:20px">No hay fotos en este evento.</div>';
+      return;
+    }
+    photos.forEach(photo => {
+      const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${photo.path}`;
+      const div = document.createElement('div');
+      div.className = 'photo-thumb';
+      div.dataset.sha = photo.sha;
+      div.dataset.path = photo.path;
+      div.dataset.name = photo.name;
+      div.innerHTML = `<img src="${rawUrl}" loading="lazy"><div class="del-overlay">✕</div>`;
+      div.onclick = () => { div.classList.toggle('marked'); updateGDelBar(); };
+      grid.appendChild(div);
+    });
+  }
+
+  function updateGDelBar() {
+    const marked = document.querySelectorAll('#gGrid .photo-thumb.marked');
+    const bar = document.getElementById('gDelBar');
+    if (marked.length > 0) {
+      bar.style.display = 'flex';
+      document.getElementById('gDelCount').textContent = `${marked.length} foto${marked.length !== 1 ? 's' : ''} seleccionada${marked.length !== 1 ? 's' : ''}`;
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+
+  async function deleteSelectedPhotos() {
+    const marked = [...document.querySelectorAll('#gGrid .photo-thumb.marked')];
+    if (!marked.length) return;
+    if (!confirm(`¿Eliminar ${marked.length} foto${marked.length > 1 ? 's' : ''}? Esta acción no se puede deshacer.`)) return;
+
+    const folder = document.getElementById('gSelect').value;
+    goTo('screen-progress');
+    document.getElementById('progressTitle').textContent = 'Eliminando fotos...';
+    document.getElementById('progressSub').textContent = 'Por favor no cierres esta pantalla';
+    let done = 0;
+
+    function setP(lbl) {
+      document.getElementById('progressBar').style.width = Math.round((done / marked.length) * 100) + '%';
+      document.getElementById('progressLabel').textContent = lbl;
+    }
+    setP('Preparando...');
+
+    try {
+      for (const thumb of marked) {
+        await ghDelete(thumb.dataset.path, `Eliminar foto: ${thumb.dataset.name}`, thumb.dataset.sha);
+        done++;
+        setP(`${done} / ${marked.length}`);
+      }
+      // Update photos.json with remaining
+      const remaining = [...document.querySelectorAll('#gGrid .photo-thumb:not(.marked)')].map(t => t.dataset.name);
+      const pPath = `assets/gallery/${folder}/fotos/photos.json`;
+      const pFile = await ghGet(pPath);
+      const pB64 = btoa(unescape(encodeURIComponent(JSON.stringify({ images: remaining }, null, 2))));
+      await ghPut(pPath, pB64, `Actualizar fotos: ${folder}`, pFile?.sha);
+
+      document.getElementById('successMsg').textContent = `Se eliminaron ${marked.length} fotos correctamente.`;
+      goTo('screen-success');
+    } catch(e) {
+      goTo('screen-gestionar');
+      document.getElementById('gError').textContent = 'Error al eliminar: ' + e.message;
+      document.getElementById('gError').style.display = 'block';
+    }
+  }
+
+  function handleGFiles(files) {
+    gNewFiles = Array.from(files);
+    const btn = document.getElementById('gAddBtn');
+    const count = document.getElementById('gNewCount');
+    if (gNewFiles.length > 0) {
+      count.style.display = 'block';
+      count.textContent = `${gNewFiles.length} foto${gNewFiles.length !== 1 ? 's' : ''} lista${gNewFiles.length !== 1 ? 's' : ''} para subir`;
+      btn.style.display = 'block';
+    } else {
+      count.style.display = 'none';
+      btn.style.display = 'none';
+    }
+  }
+
+  async function addPhotosToEvento() {
+    if (!gNewFiles.length) return;
+    const folder = document.getElementById('gSelect').value;
+    if (!folder) return;
+
+    goTo('screen-progress');
+    document.getElementById('progressTitle').textContent = 'Subiendo fotos nuevas...';
+    document.getElementById('progressSub').textContent = 'Por favor no cierres esta pantalla';
+    let done = 0;
+    const total = gNewFiles.length + 1;
+
+    function setP(lbl) {
+      document.getElementById('progressBar').style.width = Math.round((done / total) * 100) + '%';
+      document.getElementById('progressLabel').textContent = lbl;
+    }
+    setP('Preparando...');
+
+    const newNames = [];
+    try {
+      for (const file of gNewFiles) {
+        const b64 = await optimizeImage(file);
+        const name = file.name.replace(/\.[^/.]+$/, '') + '.webp';
+        newNames.push(name);
+        const path = `assets/gallery/${folder}/fotos/${name}`;
+        const ex = await ghGet(path);
+        await ghPut(path, b64, `Agregar foto: ${name}`, ex?.sha);
+        done++;
+        setP(`${done} / ${gNewFiles.length}`);
+      }
+      // Merge with existing photos.json
+      const pPath = `assets/gallery/${folder}/fotos/photos.json`;
+      const pFile = await ghGet(pPath);
+      let existing = [];
+      if (pFile) { try { existing = JSON.parse(decodeB64(pFile.content)).images || []; } catch(e){} }
+      const all = [...new Set([...existing, ...newNames])];
+      const pB64 = btoa(unescape(encodeURIComponent(JSON.stringify({ images: all }, null, 2))));
+      await ghPut(pPath, pB64, `Actualizar fotos: ${folder}`, pFile?.sha);
+      done++;
+      setP('¡Listo!');
+
+      document.getElementById('successMsg').textContent = `Se subieron ${gNewFiles.length} fotos nuevas. En 2 minutos aparecen en el sitio.`;
+      gNewFiles = [];
+      goTo('screen-success');
+    } catch(e) {
+      goTo('screen-gestionar');
+      document.getElementById('gError').textContent = 'Error al subir: ' + e.message;
+      document.getElementById('gError').style.display = 'block';
+    }
+  }
+
+  async function removeEventoFromGallery() {
+    const folder = document.getElementById('gSelect').value;
+    if (!folder) return;
+    const label = document.getElementById('gSelect').options[document.getElementById('gSelect').selectedIndex].textContent;
+    if (!confirm(`¿Quitar "${label}" de la galería?\n\nSolo lo oculta del sitio. Las fotos no se borran.`)) return;
+    try {
+      const file = await ghGet('assets/gallery/eventos.json');
+      let eventos = JSON.parse(decodeB64(file.content));
+      eventos = eventos.filter(ev => ev.folder !== folder);
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(eventos, null, 2))));
+      await ghPut('assets/gallery/eventos.json', b64, `Quitar evento: ${folder}`, file.sha);
+      document.getElementById('gOk').textContent = `✅ "${label}" fue quitado de la galería.`;
+      document.getElementById('gOk').style.display = 'block';
+      document.getElementById('gContent').style.display = 'none';
+      await goToGestionar();
+    } catch(e) {
+      document.getElementById('gError').textContent = 'Error: ' + e.message;
+      document.getElementById('gError').style.display = 'block';
+    }
+  }
+
+  // drag & drop gestionar
+  (() => {
+    const dz = document.getElementById('gDropZone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); handleGFiles(e.dataTransfer.files); });
+  })();
+
+  // ── PATROCINANTES ─────────────────────────────────────────
+  let sponsorItems = [];
+
+  async function goToPatrocinantes() {
+    goTo('screen-patrocinantes');
+    await loadPatrocinantes();
+  }
+
+  async function loadPatrocinantes() {
+    document.getElementById('spBtn').disabled = true;
+    document.getElementById('spBtn').textContent = 'Cargando...';
+    document.getElementById('spError').style.display = 'none';
+    document.getElementById('spOk').style.display = 'none';
+    try {
+      const file = await ghGet('index.html');
+      const html = decodeB64(file.content);
+      const boxes = [...html.matchAll(/<div class="sponsor-box">[\s\S]*?<\/div>/g)];
+      sponsorItems = boxes.map(m => {
+        const srcM = m[0].match(/src="([^"]*)"/);
+        const altM = m[0].match(/alt="([^"]*)"/);
+        return { src: srcM ? srcM[1].replace(/\\/g,'/') : '', alt: altM ? altM[1] : '', file: null };
+      }).filter(s => s.src);
+      renderSponsorList();
+    } catch(e) {
+      document.getElementById('spError').textContent = 'Error al cargar: ' + e.message;
+      document.getElementById('spError').style.display = 'block';
+    } finally {
+      document.getElementById('spBtn').disabled = false;
+      document.getElementById('spBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  function renderSponsorList() {
+    const list = document.getElementById('spList');
+    list.innerHTML = '';
+    if (!sponsorItems.length) {
+      list.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:20px">No hay patrocinantes aún.</div>';
+      return;
+    }
+    sponsorItems.forEach((sp, i) => {
+      const imgUrl = sp.file
+        ? URL.createObjectURL(sp.file)
+        : `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${sp.src}`;
+      const div = document.createElement('div');
+      div.className = 'sponsor-item';
+      div.innerHTML = `<img src="${imgUrl}" alt="${escHtml(sp.alt)}" onerror="this.style.opacity='0'">
+        <div class="sp-name">${escHtml(sp.alt || sp.src.split('/').pop())}</div>
+        <button type="button" class="btn-sm-danger" onclick="removeSponsor(${i})">✕</button>`;
+      list.appendChild(div);
+    });
+  }
+
+  function handleSponsorFile(file) {
+    if (!file) return;
+    window._spFile = file;
+    document.getElementById('spDropText').textContent = '✅ ' + file.name;
+    document.getElementById('spDropIcon').textContent = '✅';
+  }
+
+  function addSponsorItem() {
+    document.getElementById('spError').style.display = 'none';
+    const file = window._spFile;
+    if (!file) {
+      document.getElementById('spError').textContent = 'Selecciona una imagen primero.';
+      document.getElementById('spError').style.display = 'block';
+      return;
+    }
+    const name = document.getElementById('spName').value.trim();
+    const filename = file.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^/.]+$/,'') + '.webp';
+    sponsorItems.push({ src: `img/patrocinantes/${filename}`, alt: name || filename, file });
+    renderSponsorList();
+    document.getElementById('spName').value = '';
+    document.getElementById('spDropText').textContent = 'Toca para elegir el logo';
+    document.getElementById('spDropIcon').textContent = '🖼️';
+    document.getElementById('spFileInput').value = '';
+    window._spFile = null;
+  }
+
+  function removeSponsor(i) {
+    sponsorItems.splice(i, 1);
+    renderSponsorList();
+  }
+
+  async function savePatrocinantes() {
+    document.getElementById('spBtn').disabled = true;
+    document.getElementById('spBtn').textContent = 'Guardando...';
+    document.getElementById('spError').style.display = 'none';
+    document.getElementById('spOk').style.display = 'none';
+    try {
+      // Upload new files
+      for (const sp of sponsorItems) {
+        if (sp.file) {
+          const b64 = await optimizeImage(sp.file);
+          const ex = await ghGet(sp.src);
+          await ghPut(sp.src, b64, `Subir logo: ${sp.src.split('/').pop()}`, ex?.sha);
+          sp.file = null;
+        }
+      }
+      // Build sponsors-grid
+      let inner = '\n';
+      sponsorItems.forEach(sp => {
+        inner += `            <div class="sponsor-box">\n                <img class="sponsor-logo" src="${sp.src}" alt="${sp.alt}">\n            </div>\n`;
+      });
+      // Update index.html
+      const file = await ghGet('index.html');
+      let html = decodeB64(file.content);
+      const oldGrid = extractBlock(html, '<div class="sponsors-grid">');
+      if (oldGrid) html = html.replace(oldGrid, `<div class="sponsors-grid">${inner}        </div>`);
+      const newB64 = btoa(unescape(encodeURIComponent(html)));
+      await ghPut('index.html', newB64, 'Actualizar patrocinantes', file.sha);
+      document.getElementById('spOk').style.display = 'block';
+    } catch(e) {
+      document.getElementById('spError').textContent = 'Error al guardar: ' + e.message;
+      document.getElementById('spError').style.display = 'block';
+    } finally {
+      document.getElementById('spBtn').disabled = false;
+      document.getElementById('spBtn').textContent = '💾 Guardar cambios';
     }
   }
 
