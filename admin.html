@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin · Vibra Festa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
+    .screen{display:none;min-height:100vh;padding:24px 16px 40px}
+    .screen.active{display:block}
+    .card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 24px rgba(0,0,0,.08);max-width:560px;margin:0 auto}
+    .logo{text-align:center;margin-bottom:24px}
+    .logo h1{font-size:22px;color:#76823A}
+    .logo p{font-size:13px;color:#64748b;margin-top:4px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .field label{font-size:14px;font-weight:600;color:#374151}
+    .field input,.field select,.field textarea{padding:10px 12px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:14px;outline:none;width:100%;font-family:inherit}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:#76823A;box-shadow:0 0 0 2px rgba(118,130,58,.15)}
+    .field .hint{font-size:12px;color:#94a3b8}
+    .btn{width:100%;padding:12px;border-radius:999px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:.2s}
+    .btn-primary{background:#76823A;color:#fff;box-shadow:0 4px 16px rgba(118,130,58,.3)}
+    .btn-primary:hover{background:#5f6a2f}
+    .btn-primary:disabled{background:#94a3b8;box-shadow:none;cursor:not-allowed}
+    .btn-outline{background:#fff;color:#76823A;border:2px solid #76823A;margin-top:10px}
+    .btn-outline:hover{background:#f7f9ef}
+    .btn-danger{background:#fff;color:#ef4444;border:2px solid #ef4444;margin-top:10px}
+    .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+    .menu-card{background:#f7f9ef;border:2px solid #d9e3bd;border-radius:16px;padding:20px 14px;text-align:center;cursor:pointer;transition:.2s}
+    .menu-card:hover{border-color:#76823A;background:#eef2dc}
+    .menu-card .icon{font-size:32px;margin-bottom:8px}
+    .menu-card h3{font-size:14px;font-weight:700;color:#76823A}
+    .menu-card p{font-size:12px;color:#64748b;margin-top:4px}
+    .drop-zone{border:2px dashed #cbd5e1;border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:.2s;background:#f8fafc}
+    .drop-zone.drag-over{border-color:#76823A;background:#f7f9ef}
+    .drop-zone .icon{font-size:36px;margin-bottom:8px}
+    .drop-zone p{font-size:14px;color:#64748b}
+    .drop-zone strong{color:#76823A}
+    .preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+    .preview-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+    .preview-grid img.selected-cover{border-color:#76823A;box-shadow:0 0 0 2px #76823A}
+    .cover-hint{font-size:12px;color:#76823A;margin-top:6px;text-align:center}
+    .progress-wrap{margin:16px 0}
+    .progress-bar-bg{background:#e2e8f0;border-radius:999px;height:10px;overflow:hidden}
+    .progress-bar{background:#76823A;height:100%;border-radius:999px;transition:width .3s}
+    .progress-label{font-size:13px;color:#64748b;margin-top:6px;text-align:center}
+    .alert{border-radius:10px;padding:12px 14px;font-size:13px;margin-bottom:14px}
+    .alert-red{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+    .alert-green{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+    .back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:#76823A;cursor:pointer;margin-bottom:20px;background:none;border:none;padding:0;font-weight:600}
+    .back-btn:hover{opacity:.7}
+    .success-icon{font-size:64px;text-align:center;margin:16px 0}
+    .section-title{font-size:18px;font-weight:700;margin-bottom:20px;color:#0f172a}
+    .charla-row{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px}
+    .charla-row h4{font-size:13px;font-weight:700;color:#76823A;margin-bottom:10px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .token-info{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;font-size:12px;color:#92400e;margin-bottom:16px}
+    .token-info a{color:#92400e;font-weight:600}
+    .badge-free{display:inline-block;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+    .selected-count{font-size:13px;color:#76823A;font-weight:600;margin-top:8px;text-align:center}
+    #fileInput,#coverInput{display:none}
+    .text-section{border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden}
+    .text-section-header{padding:14px 16px;background:#f8fafc;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:#374151;user-select:none}
+    .text-section-header:hover{background:#f1f5f9}
+    .text-section-body{padding:14px 16px}
+    .toggle-icon{font-size:11px;color:#94a3b8}
+    .btn-sm-danger{background:#fff;color:#ef4444;border:1.5px solid #ef4444;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;float:right;margin:0}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div style="max-width:400px;margin:60px auto 0">
+    <div class="logo">
+      <div style="font-size:40px">🌿</div>
+      <h1>Vibra Festa Admin</h1>
+      <p>Panel de administración del sitio web</p>
+    </div>
+    <div class="card">
+      <div class="token-info">
+        <strong>¿Dónde consigo el token?</strong> Abre <a href="https://github.com/settings/tokens/new" target="_blank">github.com → Settings → Developer Settings → Personal access tokens → Tokens (classic)</a>. Crea uno con permiso <strong>repo</strong>.
+      </div>
+      <div class="field">
+        <label>Token de GitHub</label>
+        <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxx">
+        <div class="hint">Se guarda en este dispositivo. No necesitas ingresarlo cada vez.</div>
+      </div>
+      <div id="loginError" class="alert alert-red" style="display:none"></div>
+      <button class="btn btn-primary" onclick="doLogin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="screen-home">
+  <div class="card" style="margin-top:32px">
+    <div class="logo">
+      <div style="font-size:32px">🌿</div>
+      <h1>Vibra Festa Admin</h1>
+      <p id="homeUser" style="font-size:12px;color:#94a3b8"></p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="goTo('screen-evento')">
+        <div class="icon">📸</div>
+        <h3>Nuevo Evento</h3>
+        <p>Subir fotos de una nueva edición a la galería</p>
+      </div>
+      <div class="menu-card" onclick="goTo('screen-charlas')">
+        <div class="icon">🎙️</div>
+        <h3>Editar Charlas</h3>
+        <p>Cambiar nombres y horarios de las charlas</p>
+      </div>
+    </div>
+    <div class="menu-card" style="margin-top:14px;display:flex;align-items:center;gap:14px;text-align:left" onclick="goToTextos()">
+      <div class="icon" style="font-size:28px;margin:0">✏️</div>
+      <div>
+        <h3>Editar Textos</h3>
+        <p>Cambiar textos, secciones y testimonios de la página</p>
+      </div>
+    </div>
+    <button class="btn btn-danger" style="margin-top:20px" onclick="logout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- NUEVO EVENTO -->
+<div class="screen" id="screen-evento">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">📸 Nuevo Evento</div>
+
+    <div class="field">
+      <label>Nombre del evento (como aparece en la galería)</label>
+      <input type="text" id="evTitle" placeholder="Ej: Mayo 2026" oninput="autoSlug()">
+    </div>
+    <div class="field">
+      <label>Subtítulo</label>
+      <input type="text" id="evSubtitle" placeholder="Ej: Edición Primavera 2026">
+    </div>
+    <div class="field">
+      <label>Fecha del evento</label>
+      <input type="date" id="evDate">
+    </div>
+    <div class="field">
+      <label>Nombre de carpeta (se genera solo)</label>
+      <input type="text" id="evSlug" placeholder="MAYO_2026">
+      <div class="hint">Solo letras mayúsculas, números y guiones bajos. Sin espacios.</div>
+    </div>
+
+    <div class="field" style="margin-top:8px">
+      <label>Fotos del evento</label>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="icon">🖼️</div>
+        <p>Toca aquí o arrastra las fotos</p>
+        <p><strong>Acepta JPG, PNG, WebP</strong></p>
+      </div>
+      <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)">
+      <div id="selectedCount" class="selected-count" style="display:none"></div>
+    </div>
+
+    <div id="previewSection" style="display:none">
+      <div class="field">
+        <label>Portada del evento <span class="badge-free">Toca una foto para elegirla</span></label>
+        <div class="preview-grid" id="previewGrid"></div>
+        <div class="cover-hint" id="coverHint">Ninguna foto seleccionada como portada</div>
+      </div>
+    </div>
+
+    <div id="eventoError" class="alert alert-red" style="display:none"></div>
+    <button class="btn btn-primary" id="publishBtn" onclick="publishEvento()" style="margin-top:8px">🚀 Publicar evento</button>
+  </div>
+</div>
+
+<!-- EDITAR CHARLAS -->
+<div class="screen" id="screen-charlas">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">🎙️ Editar Charlas</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:18px">Estas charlas son gratuitas y aparecen en el formulario de inscripción.</p>
+
+    <div class="charla-row">
+      <h4>Charla 1</h4>
+      <div class="row2">
+        <div class="field" style="margin:0">
+          <label>Hora inicio</label>
+          <input type="text" id="c1start" placeholder="12pm">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Hora fin</label>
+          <input type="text" id="c1end" placeholder="1pm">
+        </div>
+      </div>
+      <div class="field" style="margin-top:10px;margin-bottom:0">
+        <label>Nombre de la charla</label>
+        <input type="text" id="c1name" placeholder="Charla al Ritmo del Balance">
+      </div>
+    </div>
+
+    <div class="charla-row">
+      <h4>Charla 2</h4>
+      <div class="row2">
+        <div class="field" style="margin:0">
+          <label>Hora inicio</label>
+          <input type="text" id="c2start" placeholder="2pm">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Hora fin</label>
+          <input type="text" id="c2end" placeholder="3pm">
+        </div>
+      </div>
+      <div class="field" style="margin-top:10px;margin-bottom:0">
+        <label>Nombre de la charla</label>
+        <input type="text" id="c2name" placeholder="Charla Nutrición">
+      </div>
+    </div>
+
+    <div id="charlasError" class="alert alert-red" style="display:none"></div>
+    <div id="charlasOk" class="alert alert-green" style="display:none">✅ Charlas actualizadas. En 2 minutos se verán en el sitio.</div>
+    <button class="btn btn-primary" id="charlasBtn" onclick="saveCharlas()">💾 Guardar cambios</button>
+    <button class="btn btn-outline" onclick="loadCharlas()">↺ Cargar valores actuales</button>
+  </div>
+</div>
+
+<!-- EDITAR TEXTOS -->
+<div class="screen" id="screen-textos">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">✏️ Editar Textos</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:18px">Edita los textos que aparecen en la página principal del sitio.</p>
+
+    <!-- Sobre Nosotros -->
+    <div class="text-section">
+      <div class="text-section-header" onclick="toggleSection('about-fields')">
+        <span>📖 Sobre Nosotros</span><span class="toggle-icon">▼</span>
+      </div>
+      <div id="about-fields" class="text-section-body">
+        <div id="aboutParas"></div>
+        <button type="button" class="btn btn-outline" style="margin-top:8px;padding:8px 16px;width:auto;font-size:13px" onclick="addAboutPara()">+ Agregar párrafo</button>
+      </div>
+    </div>
+
+    <!-- Sé Expositor -->
+    <div class="text-section">
+      <div class="text-section-header" onclick="toggleSection('vendor-fields')">
+        <span>🏪 Sé Expositor</span><span class="toggle-icon">▶</span>
+      </div>
+      <div id="vendor-fields" class="text-section-body" style="display:none">
+        <div class="field" style="margin-bottom:0">
+          <label>Texto descriptivo</label>
+          <textarea id="vendorText" rows="3" style="resize:vertical"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Galería -->
+    <div class="text-section">
+      <div class="text-section-header" onclick="toggleSection('gallery-fields')">
+        <span>🖼️ Sección Galería</span><span class="toggle-icon">▶</span>
+      </div>
+      <div id="gallery-fields" class="text-section-body" style="display:none">
+        <div class="field">
+          <label>Título</label>
+          <input type="text" id="galleryCtatitle">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Descripción</label>
+          <textarea id="galleryCtaText" rows="2" style="resize:vertical"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonios -->
+    <div class="text-section">
+      <div class="text-section-header" onclick="toggleSection('testimonial-fields')">
+        <span>💬 Testimonios</span><span class="toggle-icon">▶</span>
+      </div>
+      <div id="testimonial-fields" class="text-section-body" style="display:none">
+        <div id="testimonialList"></div>
+        <button type="button" class="btn btn-outline" style="margin-top:8px;padding:8px 16px;width:auto;font-size:13px" onclick="addTestimonial()">+ Agregar testimonio</button>
+      </div>
+    </div>
+
+    <div id="textosError" class="alert alert-red" style="display:none"></div>
+    <div id="textosOk" class="alert alert-green" style="display:none">✅ Textos actualizados. En 2 minutos se verán en el sitio.</div>
+    <button class="btn btn-primary" id="textosBtn" onclick="saveTextos()" style="margin-top:8px">💾 Guardar cambios</button>
+    <button class="btn btn-outline" onclick="loadTextos()">↺ Recargar texto actual</button>
+  </div>
+</div>
+
+<!-- PROGRESO -->
+<div class="screen" id="screen-progress">
+  <div class="card" style="margin-top:60px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">⏳</div>
+    <h2 style="font-size:20px;margin-bottom:8px" id="progressTitle">Subiendo fotos...</h2>
+    <p style="font-size:13px;color:#64748b;margin-bottom:20px" id="progressSub">Por favor no cierres esta pantalla</p>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ÉXITO -->
+<div class="screen" id="screen-success">
+  <div class="card" style="margin-top:60px;text-align:center">
+    <div class="success-icon">🎉</div>
+    <h2 style="font-size:22px;margin-bottom:8px">¡Publicado!</h2>
+    <p style="font-size:14px;color:#64748b;margin-bottom:24px" id="successMsg">El evento fue subido correctamente. En 2 minutos aparece en vibrafesta.com</p>
+    <a href="https://vibrafesta.com/gallery.html" target="_blank" class="btn btn-primary" style="display:block;text-decoration:none;text-align:center;margin-bottom:10px">Ver galería →</a>
+    <button class="btn btn-outline" onclick="goTo('screen-home')">Volver al inicio</button>
+  </div>
+</div>
+
+<script>
+  const OWNER = 'vibrafestaevento-droid';
+  const REPO  = 'vibrafesta_web';
+  const BRANCH = 'main';
+
+  let selectedFiles = [];
+  let coverIndex = -1;
+
+  // ── NAVEGACIÓN ──────────────────────────────────────────
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function logout() {
+    localStorage.removeItem('gh_token');
+    goTo('screen-login');
+  }
+
+  // ── LOGIN ────────────────────────────────────────────────
+  async function doLogin() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) { showError('loginError', 'Ingresa el token.'); return; }
+    document.getElementById('loginError').style.display = 'none';
+
+    try {
+      const res = await fetch('https://api.github.com/user', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!res.ok) { showError('loginError', 'Token inválido. Verifica que sea correcto.'); return; }
+      const user = await res.json();
+      localStorage.setItem('gh_token', token);
+      document.getElementById('homeUser', ).textContent = 'Conectado como ' + user.login;
+      goTo('screen-home');
+    } catch(e) {
+      showError('loginError', 'Error de conexión. Verifica tu internet.');
+    }
+  }
+
+  // ── AUTO-ARRANQUE ────────────────────────────────────────
+  window.onload = async function() {
+    const token = localStorage.getItem('gh_token');
+    if (!token) return;
+    try {
+      const res = await fetch('https://api.github.com/user', { headers: { Authorization: 'Bearer ' + token } });
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById('homeUser').textContent = 'Conectado como ' + user.login;
+        goTo('screen-home');
+      }
+    } catch(e) {}
+  };
+
+  // ── HELPERS API ──────────────────────────────────────────
+  function token() { return localStorage.getItem('gh_token'); }
+
+  async function ghGet(path) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(path)}`,
+      { headers: { Authorization: 'Bearer ' + token() } });
+    if (r.status === 404) return null;
+    return r.json();
+  }
+
+  async function ghPut(path, base64Content, message, sha) {
+    const body = { message, content: base64Content, branch: BRANCH };
+    if (sha) body.sha = sha;
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURI(path)}`, {
+      method: 'PUT',
+      headers: { Authorization: 'Bearer ' + token(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+
+  // ── OPTIMIZAR IMAGEN CON CANVAS ──────────────────────────
+  async function optimizeImage(file) {
+    return new Promise(resolve => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const MAX = 1200;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(blob => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target.result.split(',')[1]);
+          reader.readAsDataURL(blob);
+        }, 'image/webp', 0.82);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    });
+  }
+
+  // ── MANEJO DE ARCHIVOS ───────────────────────────────────
+  function handleFiles(files) {
+    selectedFiles = Array.from(files);
+    coverIndex = -1;
+    const count = selectedFiles.length;
+    const sel = document.getElementById('selectedCount');
+    sel.style.display = count > 0 ? 'block' : 'none';
+    sel.textContent = count + ' foto' + (count !== 1 ? 's' : '') + ' seleccionada' + (count !== 1 ? 's' : '');
+
+    const grid = document.getElementById('previewGrid');
+    const section = document.getElementById('previewSection');
+    grid.innerHTML = '';
+    section.style.display = count > 0 ? 'block' : 'none';
+
+    selectedFiles.forEach((f, i) => {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(f);
+      img.title = 'Usar como portada';
+      img.onclick = () => selectCover(i);
+      img.id = 'prev_' + i;
+      grid.appendChild(img);
+    });
+  }
+
+  function selectCover(i) {
+    document.querySelectorAll('.preview-grid img').forEach(img => img.classList.remove('selected-cover'));
+    document.getElementById('prev_' + i).classList.add('selected-cover');
+    coverIndex = i;
+    document.getElementById('coverHint').textContent = '✅ Portada: ' + selectedFiles[i].name;
+  }
+
+  // ── DRAG & DROP ──────────────────────────────────────────
+  const dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  // ── AUTO SLUG ────────────────────────────────────────────
+  function autoSlug() {
+    const title = document.getElementById('evTitle').value;
+    const slug = title.toUpperCase().replace(/\s+/g, '_').replace(/[^A-Z0-9_]/g, '');
+    document.getElementById('evSlug').value = slug;
+  }
+
+  // ── PUBLICAR EVENTO ──────────────────────────────────────
+  async function publishEvento() {
+    const title    = document.getElementById('evTitle').value.trim();
+    const subtitle = document.getElementById('evSubtitle').value.trim();
+    const date     = document.getElementById('evDate').value;
+    const slug     = document.getElementById('evSlug').value.trim().toUpperCase().replace(/\s+/g,'_');
+
+    if (!title)            { showError('eventoError', 'Ingresa el nombre del evento.'); return; }
+    if (!date)             { showError('eventoError', 'Elige la fecha del evento.'); return; }
+    if (!slug)             { showError('eventoError', 'El nombre de carpeta es requerido.'); return; }
+    if (selectedFiles.length === 0) { showError('eventoError', 'Sube al menos una foto.'); return; }
+    if (coverIndex < 0)    { showError('eventoError', 'Elige una foto de portada (toca una imagen de la galería de abajo).'); return; }
+
+    document.getElementById('eventoError').style.display = 'none';
+    goTo('screen-progress');
+
+    const total = selectedFiles.length + 2; // fotos + cover + eventos.json
+    let done = 0;
+
+    function setProgress(label) {
+      document.getElementById('progressBar').style.width = Math.round((done / total) * 100) + '%';
+      document.getElementById('progressLabel').textContent = label;
+    }
+
+    document.getElementById('progressTitle').textContent = 'Optimizando y subiendo fotos...';
+    setProgress('Preparando...');
+
+    const fileNames = [];
+    try {
+      // Subir fotos
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const base64 = await optimizeImage(file);
+        const ext = '.webp';
+        const rawName = file.name.replace(/\.[^/.]+$/, '');
+        const fileName = rawName + ext;
+        fileNames.push(fileName);
+        const path = `assets/gallery/${slug}/fotos/${fileName}`;
+        const existing = await ghGet(path);
+        await ghPut(path, base64, `Subir foto: ${fileName}`, existing?.sha);
+        done++;
+        setProgress(`Fotos: ${done} / ${selectedFiles.length}`);
+      }
+
+      // Subir cover
+      document.getElementById('progressTitle').textContent = 'Subiendo portada...';
+      const coverBase64 = await optimizeImage(selectedFiles[coverIndex]);
+      const coverPath = `assets/gallery/${slug}/cover.webp`;
+      const existingCover = await ghGet(coverPath);
+      await ghPut(coverPath, coverBase64, `Portada: ${slug}`, existingCover?.sha);
+      done++;
+      setProgress('Portada subida');
+
+      // Crear photos.json
+      const photosJson = JSON.stringify({ images: fileNames }, null, 2);
+      const photosB64 = btoa(unescape(encodeURIComponent(photosJson)));
+      const photosPath = `assets/gallery/${slug}/fotos/photos.json`;
+      const existingPhotos = await ghGet(photosPath);
+      await ghPut(photosPath, photosB64, `photos.json: ${slug}`, existingPhotos?.sha);
+
+      // Actualizar eventos.json
+      document.getElementById('progressTitle').textContent = 'Actualizando galería...';
+      const eventosFile = await ghGet('assets/gallery/eventos.json');
+      const eventos = JSON.parse(atob(eventosFile.content.replace(/\n/g,'')));
+      eventos.unshift({
+        title,
+        slug: slug.toLowerCase().replace(/_/g, '-'),
+        date,
+        cover: `assets/gallery/${slug}/cover.webp`,
+        folder: slug,
+        subtitle: subtitle || title
+      });
+      const eventosB64 = btoa(unescape(encodeURIComponent(JSON.stringify(eventos, null, 2))));
+      await ghPut('assets/gallery/eventos.json', eventosB64, `Nuevo evento: ${title}`, eventosFile.sha);
+      done++;
+      setProgress('¡Listo!');
+
+      document.getElementById('successMsg').textContent =
+        `"${title}" fue publicado con ${selectedFiles.length} fotos. En 2 minutos aparece en vibrafesta.com`;
+
+      // Reset form
+      selectedFiles = []; coverIndex = -1;
+      document.getElementById('evTitle').value = '';
+      document.getElementById('evSubtitle').value = '';
+      document.getElementById('evDate').value = '';
+      document.getElementById('evSlug').value = '';
+      document.getElementById('previewSection').style.display = 'none';
+      document.getElementById('previewGrid').innerHTML = '';
+      document.getElementById('selectedCount').style.display = 'none';
+
+      goTo('screen-success');
+    } catch(err) {
+      console.error(err);
+      goTo('screen-evento');
+      showError('eventoError', 'Error al subir: ' + (err.message || 'Verifica tu conexión e intenta de nuevo.'));
+    }
+  }
+
+  // ── CHARLAS ──────────────────────────────────────────────
+  async function loadCharlas() {
+    document.getElementById('charlasBtn').disabled = true;
+    document.getElementById('charlasBtn').textContent = 'Cargando...';
+    try {
+      const file = await ghGet('form_clases_vibra.html');
+      if (!file) { showError('charlasError', 'No se encontró el formulario.'); return; }
+      const html = atob(file.content.replace(/\n/g,''));
+
+      // Charla 1
+      const m1 = html.match(/name="charlas"\s+value="([^"]+)"[\s\S]*?<strong>([^<]+)<\/strong>/);
+      if (m1) {
+        const val1 = m1[1]; // "12pm - 1pm · Charla al Ritmo del Balance"
+        const parts1 = val1.split(' · ');
+        const times1 = (parts1[0] || '').split(' - ');
+        document.getElementById('c1start').value = times1[0]?.trim() || '';
+        document.getElementById('c1end').value   = times1[1]?.trim() || '';
+        document.getElementById('c1name').value  = parts1[1] || '';
+      }
+
+      // Charla 2
+      const allCharlas = [...html.matchAll(/name="charlas"\s+value="([^"]+)"/g)];
+      if (allCharlas[1]) {
+        const val2 = allCharlas[1][1];
+        const parts2 = val2.split(' · ');
+        const times2 = (parts2[0] || '').split(' - ');
+        document.getElementById('c2start').value = times2[0]?.trim() || '';
+        document.getElementById('c2end').value   = times2[1]?.trim() || '';
+        document.getElementById('c2name').value  = parts2[1] || '';
+      }
+      document.getElementById('charlasOk').style.display = 'none';
+    } catch(e) {
+      showError('charlasError', 'Error al cargar: ' + e.message);
+    } finally {
+      document.getElementById('charlasBtn').disabled = false;
+      document.getElementById('charlasBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  async function saveCharlas() {
+    const c1s = document.getElementById('c1start').value.trim();
+    const c1e = document.getElementById('c1end').value.trim();
+    const c1n = document.getElementById('c1name').value.trim();
+    const c2s = document.getElementById('c2start').value.trim();
+    const c2e = document.getElementById('c2end').value.trim();
+    const c2n = document.getElementById('c2name').value.trim();
+
+    if (!c1n || !c2n) { showError('charlasError', 'Completa los nombres de ambas charlas.'); return; }
+
+    document.getElementById('charlasBtn').disabled = true;
+    document.getElementById('charlasBtn').textContent = 'Guardando...';
+    document.getElementById('charlasError').style.display = 'none';
+    document.getElementById('charlasOk').style.display = 'none';
+
+    try {
+      const file = await ghGet('form_clases_vibra.html');
+      let html = atob(file.content.replace(/\n/g,''));
+
+      const v1 = `${c1s} - ${c1e} · ${c1n}`;
+      const v2 = `${c2s} - ${c2e} · ${c2n}`;
+      const d1 = `${c1s} – ${c1e} · ${c1n}`;
+      const d2 = `${c2s} – ${c2e} · ${c2n}`;
+
+      // Reemplazar los dos bloques de charlas
+      const allCharlas = [...html.matchAll(/name="charlas"\s+value="([^"]+)"/g)];
+      if (allCharlas[0]) html = html.replace(`value="${allCharlas[0][1]}"`, `value="${v1}"`);
+      if (allCharlas[1]) html = html.replace(`value="${allCharlas[1][1]}"`, `value="${v2}"`);
+
+      // Reemplazar los <strong> de las charlas
+      const allStrong = [...html.matchAll(/<strong>(\d+.*?·.*?)<\/strong>/g)];
+      if (allStrong[0]) html = html.replace(allStrong[0][0], `<strong>${d1}</strong>`);
+      if (allStrong[1]) html = html.replace(allStrong[1][0], `<strong>${d2}</strong>`);
+
+      const newB64 = btoa(unescape(encodeURIComponent(html)));
+      await ghPut('form_clases_vibra.html', newB64, `Actualizar charlas: ${c1n} / ${c2n}`, file.sha);
+
+      document.getElementById('charlasOk').style.display = 'block';
+    } catch(e) {
+      showError('charlasError', 'Error al guardar: ' + e.message);
+    } finally {
+      document.getElementById('charlasBtn').disabled = false;
+      document.getElementById('charlasBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  // ── TEXTOS ───────────────────────────────────────────────
+  async function goToTextos() {
+    goTo('screen-textos');
+    await loadTextos();
+  }
+
+  function toggleSection(id) {
+    const body = document.getElementById(id);
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    const icon = body.previousElementSibling.querySelector('.toggle-icon');
+    if (icon) icon.textContent = isOpen ? '▶' : '▼';
+  }
+
+  // Find the outer block starting at a given tag and return its full string
+  function extractBlock(html, startTag) {
+    const idx = html.indexOf(startTag);
+    if (idx < 0) return null;
+    let depth = 0, pos = idx;
+    while (pos < html.length) {
+      if (html.startsWith('<div', pos)) depth++;
+      else if (html.startsWith('</div>', pos)) { depth--; if (depth === 0) { pos += 6; break; } }
+      pos++;
+    }
+    return html.substring(idx, pos);
+  }
+
+  async function loadTextos() {
+    document.getElementById('textosBtn').disabled = true;
+    document.getElementById('textosBtn').textContent = 'Cargando...';
+    document.getElementById('textosError').style.display = 'none';
+    document.getElementById('textosOk').style.display = 'none';
+    try {
+      const file = await ghGet('index.html');
+      if (!file) { showError('textosError', 'No se encontró index.html.'); return; }
+      const html = atob(file.content.replace(/\n/g,''));
+
+      // About paragraphs
+      const aboutParas = [...html.matchAll(/<p class="about-text">([\s\S]*?)<\/p>/g)].map(m => m[1].trim());
+      renderAboutParas(aboutParas);
+
+      // Vendor text
+      const vM = html.match(/<p class="vendors-text">([\s\S]*?)<\/p>/);
+      document.getElementById('vendorText').value = vM ? vM[1].trim() : '';
+
+      // Gallery CTA
+      const gtM = html.match(/<h2 class="gallery-cta-title">([\s\S]*?)<\/h2>/);
+      document.getElementById('galleryCtatitle').value = gtM ? gtM[1].trim() : '';
+      const gtxtM = html.match(/<p class="gallery-cta-text">([\s\S]*?)<\/p>/);
+      document.getElementById('galleryCtaText').value = gtxtM ? gtxtM[1].trim() : '';
+
+      // Testimonials
+      const quotes = [...html.matchAll(/<p class="testimonial-quote">\s*"([\s\S]*?)"\s*<\/p>/g)].map(m => m[1].trim());
+      const names  = [...html.matchAll(/<div class="author-name">([\s\S]*?)<\/div>/g)].map(m => m[1].trim());
+      const bizs   = [...html.matchAll(/<div class="author-business">([\s\S]*?)<\/div>/g)].map(m => m[1].trim());
+      renderTestimonials(quotes, names, bizs);
+    } catch(e) {
+      showError('textosError', 'Error al cargar: ' + e.message);
+    } finally {
+      document.getElementById('textosBtn').disabled = false;
+      document.getElementById('textosBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  // ── About para helpers ────────────────────────────────────
+  function renderAboutParas(paras) {
+    const c = document.getElementById('aboutParas');
+    c.innerHTML = '';
+    paras.forEach((text, i) => {
+      const d = document.createElement('div');
+      d.className = 'field';
+      d.innerHTML = `<label style="display:flex;justify-content:space-between;align-items:center">Párrafo ${i+1}<button type="button" class="btn-sm-danger" onclick="removeAboutPara(${i})">✕ Eliminar</button></label><textarea id="aboutPara${i}" rows="3" style="resize:vertical">${escHtml(text)}</textarea>`;
+      c.appendChild(d);
+    });
+  }
+
+  function addAboutPara() {
+    const i = document.getElementById('aboutParas').querySelectorAll('textarea').length;
+    const d = document.createElement('div');
+    d.className = 'field';
+    d.innerHTML = `<label style="display:flex;justify-content:space-between;align-items:center">Párrafo ${i+1}<button type="button" class="btn-sm-danger" onclick="removeAboutPara(${i})">✕ Eliminar</button></label><textarea id="aboutPara${i}" rows="3" style="resize:vertical"></textarea>`;
+    document.getElementById('aboutParas').appendChild(d);
+  }
+
+  function removeAboutPara(i) {
+    const current = getAboutParas().filter((_, idx) => idx !== i);
+    renderAboutParas(current);
+  }
+
+  function getAboutParas() {
+    return Array.from(document.getElementById('aboutParas').querySelectorAll('textarea')).map(t => t.value.trim()).filter(Boolean);
+  }
+
+  // ── Testimonial helpers ───────────────────────────────────
+  function renderTestimonials(quotes, names, bizs) {
+    const c = document.getElementById('testimonialList');
+    c.innerHTML = '';
+    const max = Math.max(quotes.length, names.length, bizs.length, 0);
+    for (let i = 0; i < max; i++) buildTestimonialRow(c, i, quotes[i]||'', names[i]||'', bizs[i]||'');
+  }
+
+  function buildTestimonialRow(container, i, quote, name, biz) {
+    const d = document.createElement('div');
+    d.className = 'charla-row';
+    d.id = 'tRow'+i;
+    d.innerHTML = `<h4 style="display:flex;justify-content:space-between;align-items:center">Testimonio ${i+1}<button type="button" class="btn-sm-danger" onclick="removeTestimonial(${i})">✕</button></h4>
+    <div class="field" style="margin-top:8px;margin-bottom:8px"><label>Cita / frase</label><textarea id="tQuote${i}" rows="3" style="resize:vertical">${escHtml(quote)}</textarea></div>
+    <div class="row2">
+      <div class="field" style="margin:0"><label>Nombre</label><input type="text" id="tName${i}" value="${escHtml(name)}"></div>
+      <div class="field" style="margin:0"><label>Negocio / marca</label><input type="text" id="tBiz${i}" value="${escHtml(biz)}"></div>
+    </div>`;
+    container.appendChild(d);
+  }
+
+  function addTestimonial() {
+    const c = document.getElementById('testimonialList');
+    const i = c.querySelectorAll('.charla-row').length;
+    buildTestimonialRow(c, i, '', '', '');
+  }
+
+  function removeTestimonial(i) {
+    const all = getTestimonialData();
+    all.splice(i, 1);
+    renderTestimonials(all.map(t=>t.quote), all.map(t=>t.name), all.map(t=>t.biz));
+  }
+
+  function getTestimonialData() {
+    const rows = document.getElementById('testimonialList').querySelectorAll('.charla-row');
+    return Array.from(rows).map((_, i) => ({
+      quote: document.getElementById('tQuote'+i)?.value.trim() || '',
+      name:  document.getElementById('tName'+i)?.value.trim() || '',
+      biz:   document.getElementById('tBiz'+i)?.value.trim() || ''
+    }));
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Save textos ───────────────────────────────────────────
+  async function saveTextos() {
+    document.getElementById('textosBtn').disabled = true;
+    document.getElementById('textosBtn').textContent = 'Guardando...';
+    document.getElementById('textosError').style.display = 'none';
+    document.getElementById('textosOk').style.display = 'none';
+    try {
+      const file = await ghGet('index.html');
+      let html = atob(file.content.replace(/\n/g,''));
+
+      // 1. Replace about-content block
+      const newParas = getAboutParas();
+      const oldAbout = extractBlock(html, '<div class="about-content">');
+      if (oldAbout && newParas.length) {
+        let inner = '\n';
+        newParas.forEach(p => { inner += `                <p class="about-text">\n                    ${p}\n                </p>\n`; });
+        html = html.replace(oldAbout, `<div class="about-content">${inner}            </div>`);
+      }
+
+      // 2. Vendor text
+      const vt = document.getElementById('vendorText').value.trim();
+      if (vt) html = html.replace(/(<p class="vendors-text">)([\s\S]*?)(<\/p>)/, `$1\n                    ${vt}\n                $3`);
+
+      // 3. Gallery CTA
+      const gt = document.getElementById('galleryCtatitle').value.trim();
+      const gtxt = document.getElementById('galleryCtaText').value.trim();
+      if (gt)   html = html.replace(/(<h2 class="gallery-cta-title">)([\s\S]*?)(<\/h2>)/, `$1${gt}$3`);
+      if (gtxt) html = html.replace(/(<p class="gallery-cta-text">)([\s\S]*?)(<\/p>)/, `$1\n                    ${gtxt}\n                $3`);
+
+      // 4. Testimonials — replace testimonials-grid block
+      const tData = getTestimonialData().filter(t => t.quote || t.name);
+      const oldGrid = extractBlock(html, '<div class="testimonials-grid">');
+      if (oldGrid && tData.length) {
+        let inner = '\n';
+        tData.forEach(t => {
+          inner += `                <div class="testimonial-card">\n                    <p class="testimonial-quote">\n                        "${t.quote}"\n                    </p>\n                    <div class="testimonial-author">\n                        <div class="author-name">${t.name}</div>\n                        <div class="author-business">${t.biz}</div>\n                    </div>\n                </div>\n`;
+        });
+        html = html.replace(oldGrid, `<div class="testimonials-grid">${inner}            </div>`);
+      }
+
+      const newB64 = btoa(unescape(encodeURIComponent(html)));
+      await ghPut('index.html', newB64, 'Actualizar textos del sitio', file.sha);
+      document.getElementById('textosOk').style.display = 'block';
+    } catch(e) {
+      showError('textosError', 'Error al guardar: ' + e.message);
+    } finally {
+      document.getElementById('textosBtn').disabled = false;
+      document.getElementById('textosBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  // ── UTIL ─────────────────────────────────────────────────
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+    goTo(id === 'eventoError' ? 'screen-evento' :
+         id === 'charlasError' ? 'screen-charlas' : 'screen-login');
+  }
+</script>
+</body>
+</html>
