@@ -133,12 +133,22 @@
         <p>Agregar o quitar logos de marcas</p>
       </div>
     </div>
-    <div class="menu-card" style="margin-top:14px;display:flex;align-items:center;gap:14px;text-align:left" onclick="goToTextos()">
-      <div class="icon" style="font-size:28px;margin:0">✏️</div>
-      <div>
+    <div class="menu-grid" style="margin-top:14px">
+      <div class="menu-card" onclick="goToTextos()">
+        <div class="icon">✏️</div>
         <h3>Editar Textos</h3>
-        <p>Cambiar textos, secciones y testimonios de la página</p>
+        <p>Títulos, secciones y testimonios</p>
       </div>
+      <div class="menu-card" onclick="goToDiseno()">
+        <div class="icon">🎨</div>
+        <h3>Diseño</h3>
+        <p>Colores y tipografía del sitio</p>
+      </div>
+    </div>
+    <div class="menu-card" style="margin-top:14px" onclick="goTo('screen-portada')">
+      <div class="icon">🖼️</div>
+      <h3>Portada del sitio</h3>
+      <p>Cambiar la imagen principal que ven todos al entrar</p>
     </div>
     <button class="btn btn-danger" style="margin-top:20px" onclick="logout()">Cerrar sesión</button>
   </div>
@@ -239,6 +249,107 @@
     <div id="charlasOk" class="alert alert-green" style="display:none">✅ Charlas actualizadas. En 2 minutos se verán en el sitio.</div>
     <button class="btn btn-primary" id="charlasBtn" onclick="saveCharlas()">💾 Guardar cambios</button>
     <button class="btn btn-outline" onclick="loadCharlas()">↺ Cargar valores actuales</button>
+  </div>
+</div>
+
+<!-- PORTADA DEL SITIO -->
+<div class="screen" id="screen-portada">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">🖼️ Portada del Sitio</div>
+    <p style="font-size:13px;color:#64748b;margin-bottom:18px">La imagen que aparece al entrar al sitio. Sube una para desktop y otra para celular.</p>
+
+    <div class="field">
+      <label>🖥️ Imagen Desktop (horizontal)</label>
+      <div id="pdDeskPrev" style="background:#e2e8f0;border-radius:10px;height:110px;overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center">
+        <img id="pdDeskImg" style="width:100%;height:100%;object-fit:cover;display:none">
+        <span id="pdDeskEmpty" style="color:#94a3b8;font-size:12px">Vista previa desktop</span>
+      </div>
+      <div class="drop-zone" onclick="document.getElementById('pdDeskInput').click()" style="padding:14px">
+        <p id="pdDeskTxt">Toca para subir imagen horizontal</p>
+      </div>
+      <input type="file" id="pdDeskInput" accept="image/*" style="display:none" onchange="handlePortada('desk',this.files[0])">
+    </div>
+
+    <div class="field">
+      <label>📱 Imagen Móvil (vertical)</label>
+      <div id="pdMobPrev" style="background:#e2e8f0;border-radius:10px;height:110px;overflow:hidden;margin-bottom:8px;display:flex;align-items:center;justify-content:center">
+        <img id="pdMobImg" style="width:100%;height:100%;object-fit:cover;display:none">
+        <span id="pdMobEmpty" style="color:#94a3b8;font-size:12px">Vista previa móvil</span>
+      </div>
+      <div class="drop-zone" onclick="document.getElementById('pdMobInput').click()" style="padding:14px">
+        <p id="pdMobTxt">Toca para subir imagen vertical</p>
+      </div>
+      <input type="file" id="pdMobInput" accept="image/*" style="display:none" onchange="handlePortada('mob',this.files[0])">
+    </div>
+
+    <div id="pdError" class="alert alert-red" style="display:none"></div>
+    <div id="pdOk" class="alert alert-green" style="display:none">✅ Portada actualizada. En 2 minutos se ve en vibrafesta.com</div>
+    <button class="btn btn-primary" id="pdBtn" onclick="savePortada()">💾 Guardar portada</button>
+    <div style="font-size:11px;color:#94a3b8;margin-top:8px;text-align:center">Si solo cambias una de las dos, la otra se mantiene igual.</div>
+  </div>
+</div>
+
+<!-- DISEÑO -->
+<div class="screen" id="screen-diseno">
+  <div class="card" style="margin-top:24px">
+    <button class="back-btn" onclick="goTo('screen-home')">← Volver</button>
+    <div class="section-title">🎨 Diseño del Sitio</div>
+
+    <!-- Mini preview -->
+    <div id="dPreview" style="border-radius:14px;padding:14px;margin-bottom:20px;border:1px solid #e2e8f0;transition:.3s"></div>
+
+    <div class="field">
+      <label>🟢 Color principal</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" id="dPrimary" value="#76823A" oninput="syncColor(this,'dPrimaryHex');dLivePreview()" style="width:48px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <input type="text" id="dPrimaryHex" value="#76823A" oninput="syncHex(this,'dPrimary');dLivePreview()" style="flex:1">
+      </div>
+      <div class="hint">Botones, íconos, color de marca</div>
+    </div>
+
+    <div class="field">
+      <label>🟤 Fondo general</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" id="dBg" value="#F1E9D5" oninput="syncColor(this,'dBgHex');dLivePreview()" style="width:48px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <input type="text" id="dBgHex" value="#F1E9D5" oninput="syncHex(this,'dBg');dLivePreview()" style="flex:1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>🌸 Color acento</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" id="dAccent" value="#F2AFB9" oninput="syncColor(this,'dAccentHex');dLivePreview()" style="width:48px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <input type="text" id="dAccentHex" value="#F2AFB9" oninput="syncHex(this,'dAccent');dLivePreview()" style="flex:1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>⬛ Color de texto</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" id="dInk" value="#222222" oninput="syncColor(this,'dInkHex');dLivePreview()" style="width:48px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <input type="text" id="dInkHex" value="#222222" oninput="syncHex(this,'dInk');dLivePreview()" style="flex:1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>🔤 Tipografía del sitio</label>
+      <select id="dFont" onchange="dLivePreview()">
+        <option value="Open Sans">Open Sans (actual)</option>
+        <option value="Lato">Lato — limpia y moderna</option>
+        <option value="Montserrat">Montserrat — geométrica y elegante</option>
+        <option value="Raleway">Raleway — delgada y sofisticada</option>
+        <option value="Nunito">Nunito — redondeada y amigable</option>
+        <option value="Poppins">Poppins — vibrante y actual</option>
+        <option value="DM Sans">DM Sans — minimalista</option>
+        <option value="Playfair Display">Playfair Display — serif elegante</option>
+      </select>
+    </div>
+
+    <div id="dError" class="alert alert-red" style="display:none"></div>
+    <div id="dOk" class="alert alert-green" style="display:none">✅ Diseño actualizado. En 2 minutos se ve en el sitio.</div>
+    <button class="btn btn-primary" id="dBtn" onclick="saveDiseno()">💾 Guardar diseño</button>
+    <button class="btn btn-outline" onclick="loadDiseno()">↺ Cargar diseño actual</button>
   </div>
 </div>
 
@@ -743,6 +854,171 @@
     } finally {
       document.getElementById('charlasBtn').disabled = false;
       document.getElementById('charlasBtn').textContent = '💾 Guardar cambios';
+    }
+  }
+
+  // ── PORTADA ──────────────────────────────────────────────
+  const portadaFiles = { desk: null, mob: null };
+
+  function handlePortada(type, file) {
+    if (!file) return;
+    portadaFiles[type] = file;
+    const url = URL.createObjectURL(file);
+    const img   = document.getElementById(`pd${type==='desk'?'Desk':'Mob'}Img`);
+    const empty = document.getElementById(`pd${type==='desk'?'Desk':'Mob'}Empty`);
+    const txt   = document.getElementById(`pd${type==='desk'?'Desk':'Mob'}Txt`);
+    img.src = url; img.style.display = 'block'; empty.style.display = 'none';
+    txt.textContent = '✅ ' + file.name;
+  }
+
+  async function savePortada() {
+    if (!portadaFiles.desk && !portadaFiles.mob) {
+      document.getElementById('pdError').textContent = 'Selecciona al menos una imagen.';
+      document.getElementById('pdError').style.display = 'block'; return;
+    }
+    document.getElementById('pdBtn').disabled = true;
+    document.getElementById('pdBtn').textContent = 'Guardando...';
+    document.getElementById('pdError').style.display = 'none';
+    document.getElementById('pdOk').style.display = 'none';
+    try {
+      if (portadaFiles.desk) {
+        const b64 = await optimizeImage(portadaFiles.desk);
+        const ex = await ghGet('img/hero_desktop.webp');
+        await ghPut('img/hero_desktop.webp', b64, 'Actualizar portada desktop', ex?.sha);
+      }
+      if (portadaFiles.mob) {
+        const b64 = await optimizeImage(portadaFiles.mob);
+        const ex = await ghGet('img/hero_mobile.webp');
+        await ghPut('img/hero_mobile.webp', b64, 'Actualizar portada móvil', ex?.sha);
+      }
+      // Patch index.html to point to new paths (only first time)
+      const hf = await ghGet('index.html');
+      let html = decodeB64(hf.content); let changed = false;
+      if (portadaFiles.desk && (html.includes('img/Horizontal.png') || html.includes('img/Horizontal.PNG'))) {
+        html = html.replace(/srcset="img\/Horizontal\.[Pp][Nn][Gg]"/g, 'srcset="img/hero_desktop.webp"');
+        html = html.replace(/src="img\/Horizontal\.[Pp][Nn][Gg]"/g, 'src="img/hero_desktop.webp"');
+        changed = true;
+      }
+      if (portadaFiles.mob && (html.includes('img/Corregido.PNG') || html.includes('img/Corregido.png'))) {
+        html = html.replace(/srcset="img\/Corregido\.[Pp][Nn][Gg]"/g, 'srcset="img/hero_mobile.webp"');
+        changed = true;
+      }
+      if (changed) await ghPut('index.html', btoa(unescape(encodeURIComponent(html))), 'Actualizar rutas portada', hf.sha);
+      document.getElementById('pdOk').style.display = 'block';
+      portadaFiles.desk = null; portadaFiles.mob = null;
+    } catch(e) {
+      document.getElementById('pdError').textContent = 'Error: ' + e.message;
+      document.getElementById('pdError').style.display = 'block';
+    } finally {
+      document.getElementById('pdBtn').disabled = false;
+      document.getElementById('pdBtn').textContent = '💾 Guardar portada';
+    }
+  }
+
+  // ── DISEÑO ────────────────────────────────────────────────
+  function syncColor(picker, hexId) {
+    document.getElementById(hexId).value = picker.value;
+  }
+  function syncHex(input, pickerId) {
+    if (/^#[0-9a-fA-F]{6}$/.test(input.value)) document.getElementById(pickerId).value = input.value;
+  }
+
+  function dLivePreview() {
+    const primary = document.getElementById('dPrimary').value;
+    const bg      = document.getElementById('dBg').value;
+    const accent  = document.getElementById('dAccent').value;
+    const ink     = document.getElementById('dInk').value;
+    const font    = document.getElementById('dFont').value;
+    document.getElementById('dPreview').style.background = bg;
+    document.getElementById('dPreview').innerHTML = `
+      <div style="font-family:'${font}',sans-serif">
+        <div style="font-size:11px;font-weight:700;color:${ink};opacity:.5;letter-spacing:2px;margin-bottom:6px">VIBRA FESTA</div>
+        <div style="width:60%;height:8px;background:${primary};border-radius:4px;margin-bottom:10px;opacity:.8"></div>
+        <div style="height:32px;background:${accent};border-radius:8px;margin-bottom:10px;opacity:.6"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="background:${primary};color:#fff;padding:6px 16px;border-radius:999px;font-size:12px;font-weight:700">Botón</div>
+          <div style="border:2px solid ${primary};color:${primary};padding:5px 14px;border-radius:999px;font-size:12px;font-weight:700">Outline</div>
+          <span style="font-size:12px;color:${ink};opacity:.7">${font}</span>
+        </div>
+      </div>`;
+  }
+
+  async function goToDiseno() {
+    goTo('screen-diseno');
+    dLivePreview();
+    await loadDiseno();
+  }
+
+  async function loadDiseno() {
+    document.getElementById('dBtn').disabled = true;
+    document.getElementById('dBtn').textContent = 'Cargando...';
+    document.getElementById('dError').style.display = 'none';
+    try {
+      const file = await ghGet('assets/styles.css');
+      const css = decodeB64(file.content);
+
+      const set = (cssVar, pickId, hexId) => {
+        const m = css.match(new RegExp(cssVar.replace(/[-]/g,'\\-') + '\\s*:\\s*(#[0-9a-fA-F]{3,8})'));
+        if (m) { document.getElementById(pickId).value = m[1]; document.getElementById(hexId).value = m[1]; }
+      };
+      set('--accent-2', 'dPrimary', 'dPrimaryHex');
+      set('--bg',       'dBg',      'dBgHex');
+      set('--accent',   'dAccent',  'dAccentHex');
+      set('--ink',      'dInk',     'dInkHex');
+
+      const fontM = css.match(/font-family:'([^']+)',sans-serif/);
+      if (fontM) {
+        const sel = document.getElementById('dFont');
+        for (const opt of sel.options) { if (opt.value === fontM[1]) { sel.value = fontM[1]; break; } }
+      }
+      dLivePreview();
+    } catch(e) {
+      document.getElementById('dError').textContent = 'Error al cargar: ' + e.message;
+      document.getElementById('dError').style.display = 'block';
+    } finally {
+      document.getElementById('dBtn').disabled = false;
+      document.getElementById('dBtn').textContent = '💾 Guardar diseño';
+    }
+  }
+
+  async function saveDiseno() {
+    document.getElementById('dBtn').disabled = true;
+    document.getElementById('dBtn').textContent = 'Guardando...';
+    document.getElementById('dError').style.display = 'none';
+    document.getElementById('dOk').style.display = 'none';
+    const primary = document.getElementById('dPrimary').value;
+    const bg      = document.getElementById('dBg').value;
+    const accent  = document.getElementById('dAccent').value;
+    const ink     = document.getElementById('dInk').value;
+    const font    = document.getElementById('dFont').value;
+    try {
+      // Update styles.css
+      const cssFile = await ghGet('assets/styles.css');
+      let css = decodeB64(cssFile.content);
+      css = css.replace(/(--accent-2\s*:)\s*#[0-9a-fA-F]{3,8}/, `$1 ${primary}`);
+      css = css.replace(/(--bg\s*:)\s*#[0-9a-fA-F]{3,8}/, `$1 ${bg}`);
+      css = css.replace(/(--accent\s*:)\s*#[0-9a-fA-F]{3,8}/, `$1 ${accent}`);
+      css = css.replace(/(--ink\s*:)\s*#[0-9a-fA-F]{3,8}/, `$1 ${ink}`);
+      css = css.replace(/font-family:'[^']+',sans-serif/g, `font-family:'${font}',sans-serif`);
+      await ghPut('assets/styles.css', btoa(unescape(encodeURIComponent(css))), `Diseño: ${font}, ${primary}`, cssFile.sha);
+
+      // Update Google Fonts link in index.html
+      const htmlFile = await ghGet('index.html');
+      let html = decodeB64(htmlFile.content);
+      const fontUrl = font.replace(/ /g, '+');
+      html = html.replace(
+        /href="https:\/\/fonts\.googleapis\.com\/css2\?family=(?!TAN)[^"]+"/,
+        `href="https://fonts.googleapis.com/css2?family=${fontUrl}:wght@400;600;700&display=swap"`
+      );
+      await ghPut('index.html', btoa(unescape(encodeURIComponent(html))), `Fuente: ${font}`, htmlFile.sha);
+
+      document.getElementById('dOk').style.display = 'block';
+    } catch(e) {
+      document.getElementById('dError').textContent = 'Error al guardar: ' + e.message;
+      document.getElementById('dError').style.display = 'block';
+    } finally {
+      document.getElementById('dBtn').disabled = false;
+      document.getElementById('dBtn').textContent = '💾 Guardar diseño';
     }
   }
 
