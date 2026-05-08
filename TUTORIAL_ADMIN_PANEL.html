@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial Admin · Vibra Festa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#f1f5f9;color:#1e293b;line-height:1.6}
+    .header{background:linear-gradient(135deg,#76823A,#9aab47);color:#fff;padding:36px 24px 32px;text-align:center}
+    .header h1{font-size:26px;margin-bottom:8px}
+    .header p{opacity:.9;font-size:14px;max-width:500px;margin:0 auto}
+    .badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:12px;margin-top:10px}
+    .container{max-width:740px;margin:0 auto;padding:28px 16px 60px}
+
+    /* TOC */
+    .toc{background:#fff;border-radius:16px;padding:20px 22px;margin-bottom:28px;border:1px solid #e2e8f0}
+    .toc h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:12px}
+    .toc a{display:flex;align-items:center;gap:10px;color:#76823A;text-decoration:none;padding:6px 0;font-size:15px;border-bottom:1px solid #f8fafc}
+    .toc a:last-child{border-bottom:none}
+    .toc a:hover{color:#5f6a2f}
+    .toc-num{background:#f0f9f0;color:#76823A;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+
+    /* Section */
+    .section{background:#fff;border-radius:18px;padding:26px 22px;margin-bottom:20px;border:1px solid #e2e8f0;scroll-margin-top:20px}
+    .section-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+    .sec-icon{font-size:32px;flex-shrink:0}
+    .sec-title{font-size:20px;font-weight:700}
+    .sec-sub{font-size:13px;color:#64748b;font-weight:400;margin-top:2px}
+
+    /* Steps */
+    .step{display:flex;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #f1f5f9}
+    .step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .step-num{width:30px;height:30px;background:#76823A;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;margin-top:2px}
+    .step-body{flex:1}
+    .step-body p{font-size:15px;margin-bottom:0}
+    .step-body .note{font-size:13px;color:#64748b;margin-top:5px}
+    .step-body strong{color:#0f172a}
+
+    /* Alerts */
+    .alert{border-radius:12px;padding:12px 16px;font-size:14px;margin:14px 0;display:flex;gap:10px;align-items:flex-start}
+    .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+    .a-yellow{background:#fefce8;border:1px solid #fde68a;color:#92400e}
+    .a-green{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+    .a-blue{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+    .a-red{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+
+    /* UI mockups */
+    .mock{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px;margin:14px 0;font-size:13px}
+    .mock-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:10px;font-weight:600}
+    .mock-btn{display:inline-block;background:#76823A;color:#fff;border-radius:999px;padding:7px 18px;font-size:13px;font-weight:600;margin:4px 4px 4px 0}
+    .mock-btn-outline{display:inline-block;border:2px solid #76823A;color:#76823A;border-radius:999px;padding:6px 16px;font-size:13px;font-weight:600;margin:4px 4px 4px 0}
+    .mock-field{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 13px;margin:6px 0;font-size:13px;color:#64748b}
+    .mock-card{background:#f7f9ef;border:2px solid #d9e3bd;border-radius:14px;padding:14px;margin:6px 0;text-align:center}
+    .mock-card .icon{font-size:26px;margin-bottom:4px}
+    .mock-card h4{font-size:13px;font-weight:700;color:#76823A;margin-bottom:2px}
+    .mock-card p{font-size:11px;color:#64748b}
+    .menu-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+    .highlight{background:#fffbeb;border:2px solid #fde68a;border-radius:8px;padding:2px 6px;font-weight:700;color:#92400e}
+
+    /* Code / path */
+    code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:2px 8px;font-family:monospace;font-size:13px;color:#0f172a}
+
+    /* Tag special */
+    .tag{display:inline-block;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600}
+    .tag-only{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .tag-warn{background:#fef9c3;color:#854d0e;border-color:#fde047}
+
+    .check-list{list-style:none;padding:0;margin:10px 0}
+    .check-list li{padding:5px 0;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+    .check-list li::before{content:"✅";flex-shrink:0}
+
+    .divider{border:none;border-top:2px dashed #e2e8f0;margin:24px 0}
+
+    .footer{text-align:center;color:#94a3b8;font-size:13px;margin-top:40px;padding:0 16px}
+    .footer a{color:#76823A;text-decoration:none}
+
+    .screen-label{display:inline-block;background:#1e293b;color:#e2e8f0;border-radius:8px;padding:3px 10px;font-size:12px;font-family:monospace;margin-bottom:8px}
+
+    @media(max-width:500px){
+      .menu-row{grid-template-columns:1fr}
+      .header h1{font-size:22px}
+      .sec-title{font-size:17px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size:42px;margin-bottom:10px">🌿</div>
+  <h1>Panel Admin · Vibra Festa</h1>
+  <p>Guía completa para gestionar el sitio web desde el celular o computadora — sin saber nada de tecnología</p>
+  <div class="badge">vibrafesta.com/admin.html</div>
+</div>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="alert a-blue" style="margin-bottom:24px">
+    <div class="alert-icon">ℹ️</div>
+    <div>
+      <strong>¿Qué es esto?</strong> El panel admin es una página web privada desde donde podés controlar <em>todo</em> el sitio de Vibra Festa: fotos, textos, colores, patrocinantes y más. No necesitás saber nada de programación.
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contenido</h3>
+    <a href="#token"><div class="toc-num">🔑</div> Configuración inicial (el token — solo una vez)</a>
+    <a href="#nuevo-evento"><div class="toc-num">1</div> Publicar un nuevo evento con fotos</a>
+    <a href="#gestionar"><div class="toc-num">2</div> Gestionar evento existente (agregar / eliminar fotos)</a>
+    <a href="#charlas"><div class="toc-num">3</div> Editar las charlas del formulario</a>
+    <a href="#patrocinantes"><div class="toc-num">4</div> Gestionar patrocinantes</a>
+    <a href="#textos"><div class="toc-num">5</div> Editar textos de la página</a>
+    <a href="#diseno"><div class="toc-num">6</div> Cambiar colores y tipografía</a>
+    <a href="#portada"><div class="toc-num">7</div> Cambiar la portada del sitio</a>
+    <a href="#faq"><div class="toc-num">?</div> Preguntas frecuentes y errores comunes</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: TOKEN -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="token">
+    <div class="section-header">
+      <div class="sec-icon">🔑</div>
+      <div>
+        <div class="sec-title">Configuración inicial</div>
+        <div class="sec-sub">El token de acceso — solo lo hacés UNA vez</div>
+      </div>
+    </div>
+
+    <div class="alert a-yellow">
+      <div class="alert-icon">⚠️</div>
+      <div>El token es como una llave privada que le permite al admin publicar cambios en el sitio. <strong>Solo necesitás hacerlo una vez.</strong> Después el admin lo recuerda automáticamente.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Abrí el navegador y entrá a <code>github.com</code>. Ingresá con el usuario y contraseña de la cuenta <strong>vibrafestaevento-droid</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Tocá tu <strong>foto de perfil</strong> (arriba a la derecha). Se abre un menú. Tocá <strong>Settings</strong>.</p>
+        <div class="note">En celular puede que primero debas tocar el ícono de tres líneas (☰) para ver el menú.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>En el menú izquierdo, bajá <strong>hasta el final</strong> y tocá <strong>Developer settings</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Tocá <strong>Personal access tokens</strong> → <strong>Tokens (classic)</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <p>Tocá el botón <strong>Generate new token</strong> → <strong>Generate new token (classic)</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <p>Completá así:</p>
+        <div class="mock">
+          <div class="mock-field">Note: <strong>Vibra Admin</strong></div>
+          <div class="mock-field">Expiration: <strong>No expiration</strong></div>
+          <div style="margin-top:8px;font-size:13px;color:#374151">Luego buscá <strong>"repo"</strong> en la lista de permisos y marcá el checkbox:</div>
+          <div class="mock-field" style="margin-top:6px">☑ <strong>repo</strong> — Full control of private repositories</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <p>Tocá el botón verde <strong>Generate token</strong> al fondo de la página.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <p>Aparece un token que empieza con <code>ghp_</code>. <strong>Copialo ahora</strong> — solo se muestra una vez.</p>
+        <div class="alert a-red" style="margin-top:8px">
+          <div class="alert-icon">🚨</div>
+          <div>Si cerrás la página sin copiar el token, tendrás que crear uno nuevo. Guardalo en notas de tu celular.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <p>Abrí <code>vibrafesta.com/admin.html</code>, pegá el token en el campo y tocá <strong>Entrar</strong>.</p>
+        <div class="mock" style="margin-top:10px">
+          <div class="mock-title">Pantalla de login</div>
+          <div class="mock-field">ghp_xxxxxxxxxxxxxxxx</div>
+          <div class="mock-btn" style="margin-top:8px">Entrar</div>
+        </div>
+        <div class="note">El admin guarda el token en tu dispositivo. La próxima vez que entres, entrás directo sin escribir el token de nuevo.</div>
+      </div>
+    </div>
+
+    <div class="alert a-green" style="margin-top:4px">
+      <div class="alert-icon">✅</div>
+      <div>Una vez dentro, verás el menú principal con todas las opciones disponibles. <strong>¡Configuración lista!</strong></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 1: NUEVO EVENTO -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="nuevo-evento">
+    <div class="section-header">
+      <div class="sec-icon">📸</div>
+      <div>
+        <div class="sec-title">1 · Publicar un nuevo evento</div>
+        <div class="sec-sub">Subir fotos de una nueva edición de Vibra a la galería</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>En el menú principal, tocá la card <strong>📸 Nuevo Evento</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Completá los datos del evento:</p>
+        <div class="mock">
+          <div class="mock-title">Campos a completar</div>
+          <div class="mock-field">Nombre del evento → <strong>ej: Junio 2026</strong></div>
+          <div class="mock-field">Subtítulo → <strong>ej: Edición Verano</strong> (opcional)</div>
+          <div class="mock-field">Fecha del evento → tocá el calendario y elegí la fecha</div>
+          <div class="mock-field">Nombre de carpeta → <span class="highlight">se genera solo</span> — no toques nada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Tocá la zona de <strong>"Toca aquí o arrastra las fotos"</strong> para elegir las fotos desde tu dispositivo. Podés elegir <strong>todas a la vez</strong>.</p>
+        <div class="note">Las fotos se optimizan automáticamente (se reducen para que carguen rápido en el sitio).</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Aparece una grilla con miniaturas de todas las fotos. <strong>Tocá UNA foto</strong> para elegirla como <em>portada</em> del evento (la que aparece en la galería principal).</p>
+        <div class="mock">
+          <div class="mock-title">Seleccionar portada</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+            <div style="background:#e2e8f0;aspect-ratio:1;border-radius:6px"></div>
+            <div style="background:#e2e8f0;aspect-ratio:1;border-radius:6px;border:3px solid #76823A"></div>
+            <div style="background:#e2e8f0;aspect-ratio:1;border-radius:6px"></div>
+            <div style="background:#e2e8f0;aspect-ratio:1;border-radius:6px"></div>
+          </div>
+          <div style="font-size:12px;color:#76823A;margin-top:6px;text-align:center">✅ La foto con borde verde = portada elegida</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <p>Tocá el botón <strong>🚀 Publicar evento</strong> y esperá. Verás una barra de progreso mientras se suben las fotos.</p>
+        <div class="note">No cierres la pantalla mientras sube. El tiempo depende de la cantidad de fotos y la velocidad del internet.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <p>Cuando termina, aparece la pantalla <strong>🎉 ¡Publicado!</strong>. El evento aparecerá en <code>vibrafesta.com</code> en menos de 2 minutos.</p>
+      </div>
+    </div>
+
+    <div class="alert a-blue">
+      <div class="alert-icon">💡</div>
+      <div>Podés subir entre 20 y 200 fotos por evento. Si tenés más, podés agregar más fotos después usando <strong>Gestionar Evento</strong>.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 2: GESTIONAR EVENTO -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="gestionar">
+    <div class="section-header">
+      <div class="sec-icon">📁</div>
+      <div>
+        <div class="sec-title">2 · Gestionar evento existente</div>
+        <div class="sec-sub">Agregar fotos, eliminar fotos, quitar evento de la galería</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>📁 Gestionar Evento</strong> en el menú principal.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Se carga la lista de eventos. Tocá el <strong>selector</strong> y elegí cuál querés editar.</p>
+        <div class="mock-field" style="margin-top:8px">▼ Ej: Abril 2026 · Edicion Balance 2026</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Aparecen las fotos actuales del evento. Podés hacer tres cosas:</p>
+      </div>
+    </div>
+
+    <hr class="divider" style="margin:8px 0 16px">
+
+    <p style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">A) Eliminar fotos</p>
+
+    <div class="step">
+      <div class="step-num">→</div>
+      <div class="step-body">
+        <p><strong>Tocá las fotos</strong> que querés eliminar. Se marcan con una X roja. Podés marcar varias a la vez.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">→</div>
+      <div class="step-body">
+        <p>Aparece una barra roja abajo con el botón <strong>🗑 Eliminar</strong>. Tocalo y confirmá.</p>
+        <div class="alert a-red" style="margin-top:8px">
+          <div class="alert-icon">⚠️</div>
+          <div>Eliminar fotos es <strong>permanente</strong>. No hay forma de recuperarlas desde el admin.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" style="margin:16px 0">
+
+    <p style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">B) Agregar más fotos</p>
+
+    <div class="step">
+      <div class="step-num">→</div>
+      <div class="step-body">
+        <p>Tocá la zona <strong>"Toca o arrastra las fotos"</strong> para elegir nuevas fotos desde tu dispositivo.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">→</div>
+      <div class="step-body">
+        <p>Tocá el botón <strong>📤 Subir fotos nuevas</strong>. Se agregan sin borrar las que ya están.</p>
+      </div>
+    </div>
+
+    <hr class="divider" style="margin:16px 0">
+
+    <p style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">C) Quitar evento de la galería</p>
+
+    <div class="step">
+      <div class="step-num">→</div>
+      <div class="step-body">
+        <p>Tocá el botón <strong>🗑 Quitar evento de la galería</strong> al fondo de la pantalla.</p>
+        <div class="note">Esto solo <em>esconde</em> el evento del listado. Las fotos no se borran. Podés volver a agregarlo si querés.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 3: CHARLAS -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="charlas">
+    <div class="section-header">
+      <div class="sec-icon">🎙️</div>
+      <div>
+        <div class="sec-title">3 · Editar las charlas</div>
+        <div class="sec-sub">Actualizar horarios y nombres en el formulario de inscripción</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>🎙️ Editar Charlas</strong> en el menú.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Tocá el botón <strong>↺ Cargar valores actuales</strong> para ver los datos que están en el sitio ahora mismo.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Editá los campos que necesites:</p>
+        <div class="mock">
+          <div class="mock-title">Charla 1</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div class="mock-field">Hora inicio: <strong>12pm</strong></div>
+            <div class="mock-field">Hora fin: <strong>1pm</strong></div>
+          </div>
+          <div class="mock-field">Nombre: <strong>Charla al Ritmo del Balance</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Tocá <strong>💾 Guardar cambios</strong>. En 2 minutos el formulario del sitio se actualiza.</p>
+      </div>
+    </div>
+
+    <div class="alert a-green">
+      <div class="alert-icon">✅</div>
+      <div>Aparece el mensaje "Charlas actualizadas" cuando todo salió bien.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 4: PATROCINANTES -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="patrocinantes">
+    <div class="section-header">
+      <div class="sec-icon">🏪</div>
+      <div>
+        <div class="sec-title">4 · Gestionar patrocinantes</div>
+        <div class="sec-sub">Agregar logos nuevos o quitar los actuales</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>🏪 Patrocinantes</strong> en el menú. Se cargan automáticamente los logos actuales del sitio.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Para <strong>eliminar un patrocinante</strong>: tocá la X roja al lado de su logo.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Para <strong>agregar un nuevo patrocinante</strong>:</p>
+        <div class="mock">
+          <div class="mock-title">Agregar patrocinante</div>
+          <div class="mock-field">1. Toca "Toca para elegir el logo" → elegí la imagen del logo</div>
+          <div class="mock-field">2. Escribe el nombre del patrocinante (ej: Aldea Café)</div>
+          <div class="mock-btn-outline" style="margin-top:6px">+ Agregar a la lista</div>
+        </div>
+        <div class="note">Podés agregar varios antes de guardar. El logo se optimiza automáticamente.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Cuando tengas la lista como querés, tocá <strong>💾 Guardar cambios</strong>. En 2 minutos se actualiza el sitio.</p>
+      </div>
+    </div>
+
+    <div class="alert a-blue">
+      <div class="alert-icon">💡</div>
+      <div>El orden en la lista es el orden en que aparecen en el sitio. Los que agregás nuevos van al final.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 5: TEXTOS -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="textos">
+    <div class="section-header">
+      <div class="sec-icon">✏️</div>
+      <div>
+        <div class="sec-title">5 · Editar textos del sitio</div>
+        <div class="sec-sub">Cambiar párrafos, sección "Sobre nosotros", expositor, testimonios</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>✏️ Editar Textos</strong>. Se carga el contenido actual del sitio automáticamente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Las secciones se muestran <strong>contraídas</strong>. Tocá el encabezado de cada una para abrirla:</p>
+        <div class="mock">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:8px;margin-bottom:4px;cursor:pointer">
+            <span>📖 Sobre Nosotros</span><span style="color:#94a3b8;font-size:12px">▼ abierta</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:8px;margin-bottom:4px;cursor:pointer">
+            <span>🏪 Sé Expositor</span><span style="color:#94a3b8;font-size:12px">▶ cerrada</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:8px;margin-bottom:4px;cursor:pointer">
+            <span>🖼️ Sección Galería</span><span style="color:#94a3b8;font-size:12px">▶ cerrada</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:8px;cursor:pointer">
+            <span>💬 Testimonios</span><span style="color:#94a3b8;font-size:12px">▶ cerrada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Editá el texto directamente en los campos de cada sección. Podés:</p>
+        <ul class="check-list" style="margin-top:8px">
+          <li>Editar los 3 párrafos de "Sobre Nosotros"</li>
+          <li>Agregar párrafos nuevos con el botón <strong>+ Agregar párrafo</strong></li>
+          <li>Eliminar un párrafo con el botón <strong>✕ Eliminar</strong></li>
+          <li>Cambiar el texto de la sección "Sé Expositor"</li>
+          <li>Editar el título y descripción de la sección Galería</li>
+          <li>Editar las citas y datos de los testimonios</li>
+          <li>Agregar o eliminar testimonios</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Tocá <strong>💾 Guardar cambios</strong>. En 2 minutos los nuevos textos aparecen en el sitio.</p>
+      </div>
+    </div>
+
+    <div class="alert a-yellow">
+      <div class="alert-icon">⚠️</div>
+      <div>Siempre tocá <strong>↺ Recargar texto actual</strong> antes de editar, para asegurarte de trabajar con la versión más reciente.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 6: DISEÑO -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="diseno">
+    <div class="section-header">
+      <div class="sec-icon">🎨</div>
+      <div>
+        <div class="sec-title">6 · Cambiar colores y tipografía</div>
+        <div class="sec-sub">Personalizar la apariencia completa del sitio</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>🎨 Diseño</strong> en el menú. Se cargan los valores actuales automáticamente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Hay <strong>4 colores</strong> que podés cambiar:</p>
+        <div class="mock">
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:32px;height:32px;background:#76823A;border-radius:8px;border:2px solid #e2e8f0"></div>
+            <div><strong>Color principal</strong> — botones, íconos, marca</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:32px;height:32px;background:#F1E9D5;border-radius:8px;border:2px solid #e2e8f0"></div>
+            <div><strong>Fondo general</strong> — color de fondo del sitio</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:32px;height:32px;background:#F2AFB9;border-radius:8px;border:2px solid #e2e8f0"></div>
+            <div><strong>Color acento</strong> — detalles decorativos</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+            <div style="width:32px;height:32px;background:#222;border-radius:8px;border:2px solid #e2e8f0"></div>
+            <div><strong>Color de texto</strong> — todo el texto del sitio</div>
+          </div>
+        </div>
+        <div class="note">Podés tocar el cuadrado de color para abrir el selector, o escribir el código hexadecimal (#rrggbb) directamente.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>En el campo <strong>Tipografía</strong>, elegí la fuente del menú desplegable. Hay 8 opciones de fuentes modernas.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Arriba de los campos hay un <strong>preview en tiempo real</strong> que muestra cómo quedan los colores y la fuente antes de guardar.</p>
+        <div class="mock">
+          <div id="livePreviewDemo" style="background:#F1E9D5;border-radius:10px;padding:14px">
+            <div style="font-size:10px;font-weight:700;color:#222;opacity:.5;letter-spacing:2px;margin-bottom:6px">VIBRA FESTA</div>
+            <div style="width:55%;height:7px;background:#76823A;border-radius:4px;margin-bottom:10px;opacity:.8"></div>
+            <div style="height:28px;background:#F2AFB9;border-radius:8px;margin-bottom:10px;opacity:.6"></div>
+            <div style="display:flex;gap:8px">
+              <div style="background:#76823A;color:#fff;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700">Botón</div>
+              <span style="font-size:11px;color:#222;opacity:.7;margin-top:4px">Open Sans</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <p>Cuando estés conforme, tocá <strong>💾 Guardar diseño</strong>.</p>
+      </div>
+    </div>
+
+    <div class="alert a-blue">
+      <div class="alert-icon">💡</div>
+      <div>Si cambiás algo y no te gusta, podés volver a tocar <strong>↺ Cargar diseño actual</strong> para restaurar los valores guardados.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 7: PORTADA -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="portada">
+    <div class="section-header">
+      <div class="sec-icon">🖼️</div>
+      <div>
+        <div class="sec-title">7 · Cambiar la portada del sitio</div>
+        <div class="sec-sub">La imagen grande que aparece al entrar a vibrafesta.com</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Tocá la card <strong>🖼️ Portada del Sitio</strong> en el menú.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Hay <strong>dos imágenes</strong> que podés cambiar:</p>
+        <div class="mock">
+          <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9">
+            <div style="font-size:24px">🖥️</div>
+            <div><strong>Desktop</strong> — imagen horizontal, para quienes entran desde computadora</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;padding:8px 0">
+            <div style="font-size:24px">📱</div>
+            <div><strong>Móvil</strong> — imagen vertical, para quienes entran desde el celular</div>
+          </div>
+        </div>
+        <div class="note">Si solo querés cambiar una de las dos, dejá la otra vacía. Solo se actualiza la que elegís.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Tocá la zona correspondiente para elegir la imagen desde tu dispositivo. Verás una vista previa antes de guardar.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>Tocá <strong>💾 Guardar portada</strong>. La imagen se optimiza automáticamente para que cargue rápido.</p>
+      </div>
+    </div>
+
+    <div class="alert a-yellow">
+      <div class="alert-icon">💡</div>
+      <div>
+        <strong>Formato recomendado:</strong><br>
+        • Desktop: imagen apaisada (horizontal), mínimo 1920×800 px<br>
+        • Móvil: imagen vertical o cuadrada, mínimo 800×1000 px
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- FAQ -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section" id="faq">
+    <div class="section-header">
+      <div class="sec-icon">❓</div>
+      <div>
+        <div class="sec-title">Preguntas frecuentes</div>
+        <div class="sec-sub">Errores comunes y cómo resolverlos</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>"Token inválido. Verifica que sea correcto."</strong></p>
+        <div class="note">El token fue mal copiado o expiró. Entrá a github.com, creá un nuevo token siguiendo los pasos de la sección "Configuración inicial" y pegá el nuevo.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>El botón "Guardar" no hace nada o da error</strong></p>
+        <div class="note">Verificá tu conexión a internet. Si tenés internet, el problema puede ser que otro cambio se hizo al mismo tiempo. Tocá el botón "↺ Recargar" y volvé a intentar.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>Guardé los cambios pero no los veo en el sitio</strong></p>
+        <div class="note">Los cambios tardan hasta 2 minutos en verse. Si pasaron más de 5 minutos, refrescá la página del sitio con Ctrl+R (o tirá para abajo en el celular).</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>Las fotos tardan mucho en subir</strong></p>
+        <div class="note">El tiempo depende de cuántas fotos sean y la velocidad del wifi. Para eventos grandes (100+ fotos), conectate a un wifi bueno. No cierres la pantalla mientras carga.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>Cambié el diseño y quedó mal, ¿cómo vuelvo atrás?</strong></p>
+        <div class="note">Entrá a la sección Diseño, ajustá los colores y fuente de vuelta a los valores originales y guardá. Los colores originales de Vibra son: Principal <code>#76823A</code>, Fondo <code>#F1E9D5</code>, Acento <code>#F2AFB9</code>, Texto <code>#222222</code>. Fuente: Open Sans.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>El admin me pidió el token de nuevo</strong></p>
+        <div class="note">Eso pasa si limpiaste el historial o las cookies del navegador. Es normal — pegá el mismo token que tenés guardado. Si no lo tenés, creá uno nuevo en GitHub.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>¿El admin es seguro? ¿Alguien puede entrar?</strong></p>
+        <div class="note">Solo quien tenga el token puede hacer cambios. Si creés que el token fue comprometido, entrá a GitHub, borrá ese token y creá uno nuevo. El token viejo deja de funcionar automáticamente.</div>
+      </div>
+    </div>
+
+    <div class="step" style="border-bottom:none;padding-bottom:0;margin-bottom:0">
+      <div class="step-num">?</div>
+      <div class="step-body">
+        <p><strong>¿Puedo usar el admin desde el celular?</strong></p>
+        <div class="note">Sí, está diseñado especialmente para celular. Todo funciona desde el navegador: Chrome, Safari o cualquier otro. No necesitás instalar nada.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN RÁPIDO -->
+  <div class="section" style="background:linear-gradient(135deg,#f7f9ef,#eef2dc);border-color:#d9e3bd">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:28px">🌿</div>
+      <div style="font-size:16px;font-weight:700;color:#76823A;margin-top:6px">Resumen de todas las funciones</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mock-card"><div class="icon">📸</div><h4>Nuevo Evento</h4><p>Subir fotos nuevas</p></div>
+      <div class="mock-card"><div class="icon">📁</div><h4>Gestionar Evento</h4><p>Editar fotos existentes</p></div>
+      <div class="mock-card"><div class="icon">🎙️</div><h4>Charlas</h4><p>Horarios del formulario</p></div>
+      <div class="mock-card"><div class="icon">🏪</div><h4>Patrocinantes</h4><p>Logos de marcas</p></div>
+      <div class="mock-card"><div class="icon">✏️</div><h4>Editar Textos</h4><p>Párrafos y testimonios</p></div>
+      <div class="mock-card"><div class="icon">🎨</div><h4>Diseño</h4><p>Colores y fuente</p></div>
+      <div class="mock-card" style="grid-column:1/-1"><div class="icon">🖼️</div><h4>Portada del Sitio</h4><p>Imagen principal desktop y móvil</p></div>
+    </div>
+    <div class="alert a-green" style="margin-top:16px;margin-bottom:0">
+      <div class="alert-icon">✅</div>
+      <div>Todo desde <strong>vibrafesta.com/admin.html</strong> — sin instalar nada, desde cualquier dispositivo.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Panel Admin · Vibra Festa · <a href="https://vibrafesta.com/admin.html">vibrafesta.com/admin.html</a></p>
+    <p style="margin-top:6px">Ante cualquier problema, consultá con quien configuró el sitio.</p>
+  </div>
+
+</div>
+</body>
+</html>
