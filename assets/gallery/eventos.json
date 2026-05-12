@@ -23,7 +23,7 @@
     "title": "Diciembre 2025",
     "slug": "Edicion Navideña",
     "date": "2025-12-7",
-    "cover": "assets/gallery/DICIEMBRE 2025/cover.jpg",
+    "cover": "assets/gallery/DICIEMBRE 2025/cover.webp",
     "folder": "DICIEMBRE 2025",
     "subtitle": "Edición Navideña"
   },
@@ -31,7 +31,7 @@
     "title": "Aniversario II VIBRA",
     "slug": "aniversario-vibra",
     "date": "2025-10-01",
-    "cover": "assets/gallery/ANIVERSARIO_VIBRA_OPTIMIZADO/cover.jpg",
+    "cover": "assets/gallery/ANIVERSARIO_VIBRA_OPTIMIZADO/cover.webp",
     "folder": "ANIVERSARIO_VIBRA_OPTIMIZADO",
     "subtitle": "Edición especial 2° aniversario"
   },
@@ -39,21 +39,21 @@
     "slug": "octubre-2025",
     "title": "Octubre 2025",
     "date": "2025-10-01",
-    "cover": "assets/gallery/OCTUBRE 2025/cover.jpg",
+    "cover": "assets/gallery/OCTUBRE 2025/cover.webp",
     "folder": "OCTUBRE 2025"
   },
   {
     "slug": "septiembre-2025",
     "title": "Septiembre 2025",
     "date": "2025-09-16",
-    "cover": "assets/gallery/SEPTIEMBRE 2025/fotos/IMG_2399.JPG",
+    "cover": "assets/gallery/SEPTIEMBRE 2025/cover.webp",
     "folder": "SEPTIEMBRE 2025"
   },
     {
     "title": "Vibra X The Picnic Fest",
     "slug": "vibra-picnic",
     "date": "2025-08-01",
-    "cover": "assets/gallery/VIBRA_PICNICFEST_OPTIMIZADO/cover.jpg",
+    "cover": "assets/gallery/VIBRA_PICNICFEST_OPTIMIZADO/cover.webp",
     "folder": "VIBRA_PICNICFEST_OPTIMIZADO",
     "subtitle": ""
   },
@@ -61,42 +61,42 @@
     "slug": "agosto-2025",
     "title": "Agosto 2025",
     "date": "2025-08-16",
-    "cover": "assets/gallery/AGOSTO 2025/cover.jpg",
+    "cover": "assets/gallery/AGOSTO 2025/cover.webp",
     "folder": "AGOSTO 2025"
   },
   {
     "slug": "mayo-2024",
     "title": "Mayo 2024",
     "date": "2024-05-01",
-    "cover": "assets/gallery/MAYO 2024/cover.jpeg",
+    "cover": "assets/gallery/MAYO 2024/cover.webp",
     "folder": "MAYO 2024"
   },
   {
     "slug": "febrero-2024",
     "title": "Febrero 2024",
     "date": "2024-02-01",
-    "cover": "assets/gallery/FEBRERO 2024/cover.jpg",
+    "cover": "assets/gallery/FEBRERO 2024/cover.webp",
     "folder": "FEBRERO 2024"
   },
   {
     "slug": "diciembre-2024",
     "title": "Diciembre 2024",
     "date": "2024-12-01",
-    "cover": "assets/gallery/DICIEMBRE 2024/cover.jpg",
+    "cover": "assets/gallery/DICIEMBRE 2024/cover.webp",
     "folder": "DICIEMBRE 2024"
   },
   {
     "slug": "noviembre-2023",
     "title": "Noviembre 2023",
     "date": "2023-11-01",
-    "cover": "assets/gallery/NOVIEMBRE 2023/cover.jpg",
+    "cover": "assets/gallery/NOVIEMBRE 2023/cover.webp",
     "folder": "NOVIEMBRE 2023"
   },
   {
     "slug": "diciembre-2023",
     "title": "Diciembre 2023",
     "date": "2023-10-01",
-    "cover": "assets/gallery/DICIEMBRE 2023/cover.jpg",
+    "cover": "assets/gallery/DICIEMBRE 2023/cover.webp",
     "folder": "DICIEMBRE 2023"
   }
 ]
