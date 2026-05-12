@@ -91,9 +91,8 @@
         document.querySelector('.gallery-hero h1').textContent = title;
         document.querySelector('.gallery-hero p').textContent  = subtitle || '';
         if (cover){
-          const webpCover = cover.replace(/\.[^/.]+$/, ".webp");
           hero.style.backgroundImage =
-            `linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.60)), url('${webpCover}')`;
+            `linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.60)), url('${cover}')`;
           hero.style.backgroundSize = 'cover';
           hero.style.backgroundPosition = 'center';
         }
@@ -138,11 +137,10 @@
         eventos.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
         grid.innerHTML = eventos.map(ev => {
-          const webpCover = ev.cover.replace(/\.[^/.]+$/, ".webp");
           const href = `/gallery.html?event=${encodeURIComponent(ev.slug || ev.title)}`;
           return `
             <article class="card" data-href="${href}">
-              <img src="${webpCover}" alt="${ev.title} — portada" loading="lazy" decoding="async">
+              <img src="${ev.cover}" alt="${ev.title} — portada" loading="lazy" decoding="async">
               <div class="body">
                 <h3>${ev.title}</h3>
                 <p>${ev.subtitle || `Fotos de la edición ${ev.title}.`}</p>
@@ -205,12 +203,11 @@
         const imgs = (found.json.images || []);
 
         photosDiv.innerHTML = imgs.map((name, index) => {
-          const webpName = name.replace(/\.[^/.]+$/, ".webp");
           // Link a la galería con la foto específica
-          const photoUrl = `${window.location.origin}/gallery.html?event=${encodeURIComponent(ev.slug || ev.title)}&photo=${encodeURIComponent(webpName)}`;
+          const photoUrl = `${window.location.origin}/gallery.html?event=${encodeURIComponent(ev.slug || ev.title)}&photo=${encodeURIComponent(name)}`;
           return `
-            <figure class="photo" data-photo-name="${webpName}" data-photo-index="${index}" data-photo-url="${photoUrl}" data-photo-src="${base}${encodeURIComponent(webpName)}">
-              <img src="${base}${encodeURIComponent(webpName)}" alt="${ev.title} — ${name}" loading="lazy" decoding="async">
+            <figure class="photo" data-photo-name="${name}" data-photo-index="${index}" data-photo-url="${photoUrl}" data-photo-src="${base}${encodeURIComponent(name)}">
+              <img src="${base}${encodeURIComponent(name)}" alt="${ev.title} — ${name}" loading="lazy" decoding="async">
             </figure>
           `;
         }).join('');
