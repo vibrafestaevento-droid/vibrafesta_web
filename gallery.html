@@ -179,7 +179,7 @@
         }
 
         crumb.innerHTML = `<a href="/">Inicio</a> <span>›</span> <a href="/gallery.html">Eventos</a> <span>›</span> ${ev.title}`;
-        setHero(ev.title, ev.subtitle || `Fotos de la edición ${ev.title}.`, ev.cover);
+        setHero(ev.title, ev.subtitle || `Fotos de la edición ${ev.title}.`, ev.banner || ev.cover);
 
         section.innerHTML = '<div class="photos" id="photos"><p style="grid-column:1/-1; color:var(--muted);">Cargando fotos...</p></div>';
         const photosDiv = document.getElementById('photos');
